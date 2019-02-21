@@ -2,11 +2,10 @@ import ast
 
 from bson import ObjectId
 from flask import Flask, render_template, flash, redirect, url_for, session, request, logging, session
-from data import Articles
 import sqlite3
 from wtforms import Form, StringField, TextAreaField, PasswordField, validators
 from functools import wraps
-from databases import db
+from database import db
 import classes.statistics as stat
 import classes.StatisticsStd as stdev
 import time
@@ -14,7 +13,6 @@ import datetime
 import random
 
 app = Flask(__name__)
-Articles = Articles()
 
 now = datetime.datetime.now()
 
@@ -28,7 +26,6 @@ def about():
 
 @app.route('/articles')
 def articles():
-
     articles = db.article.find()
 
     if articles is not None:
@@ -39,10 +36,10 @@ def articles():
 
 @app.route('/article/<string:id>/')
 def article(id):
-    articles = db.article.find({"_id": ObjectId(id)})
+    article = db.article.find_one({"_id": ObjectId(id)})
 
-    print(articles)
-    return render_template('article.html', articles=articles)
+    print(article['title'])
+    return render_template('article.html', article=article)
 
 
 def is_logged_in(f):
@@ -214,7 +211,6 @@ def stat_simulation(name):
         'stat_output_stddev.html', **locals())
 
 
-#########################################################################################
 
 #######################################################################################
 
