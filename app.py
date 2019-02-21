@@ -24,6 +24,55 @@ def index():
 def about():
     return render_template('about.html')
 
+def is_logged_in(f):
+    @wraps(f)
+    def wrap(*args, **kwargs):
+        if 'logged_in' in session:
+            return f(*args, **kwargs)
+        else:
+            flash('Unauthorized, Please login', 'danger')
+            return redirect(url_for('login'))
+    return wrap
+
+@app.route('/classroom')
+def classroom():
+    classes = db.classes.find()
+
+    if classes is not None:
+        return render_template('classes.html', classes=classes)
+    else:
+        msg = 'No Class Found'
+        return render_template('classes.html', msg=msg)
+
+class ClassroomForm(Form):
+    title = StringField('Class Name', [validators.Length(min=1, max=200)])
+    code = StringField('Class Instructor', [validators.Length(min=4)])
+
+@app.route('/add_classroom', methods=['GET', 'POST'])
+@is_logged_in
+def add_classroom():
+    form = ClassroomForm(request.form)
+    if request.method == 'POST' and form.validate():
+        title = form.title.data
+        code = form.code.data
+        instructor = session['username']
+
+        db.classes.insert({"title": title, "code": code, "instructor": instructor})
+
+        flash('Class Created', 'success')
+
+        return redirect(url_for('classroom'))
+
+    return render_template('add_classroom.html', form=form)
+
+@app.route('/delete_classroom/<string:id>', methods=['GET', 'POST'])
+def delete_classroom(id):
+    db.classes.remove({"_id": ObjectId(id)})
+    flash('Classroom Deleted', 'success')
+    return redirect(url_for('classroom'))
+
+
+
 @app.route('/articles')
 def articles():
     articles = db.article.find()
@@ -40,17 +89,6 @@ def article(id):
 
     print(article['title'])
     return render_template('article.html', article=article)
-
-
-def is_logged_in(f):
-    @wraps(f)
-    def wrap(*args, **kwargs):
-        if 'logged_in' in session:
-            return f(*args, **kwargs)
-        else:
-            flash('Unauthorized, Please login', 'danger')
-            return redirect(url_for('login'))
-    return wrap
 
 
 class RegisterForm(Form):

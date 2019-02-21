@@ -1,0 +1,27 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+    <br/><br/>
+    <h1>Classroom</h1>
+    <hr>
+
+
+    {% for class in classes %}
+    <ul align="center">
+        <li class="list-group-item">Title: {{class['title']}}</li>
+        <li class="list-group-item">Class Code: {{class['code']}}</li>
+        <li class="list-group-item">Instructor: {{class['instructor']}}</li>
+
+        <li class="list-group-item">
+          <form action="{{url_for('delete_classroom', id=class['_id'])}}" method="post">
+              <a href="edit_article/{{class['_id']}}" class="btn btn-success pull-right">View Projects</a>
+              <input type="hidden" name="_method" value="DELETE">
+              <input type="submit" value="Remove Class" class="btn btn-danger">
+          </form>
+        </li>
+    </ul>
+    <br/>
+    {% endfor %}
+    <a class="btn btn-success" style="float: right;" href="/add_classroom"> Add Classroom </a>
+    <br/><br/><br/>
+{% endblock %}
