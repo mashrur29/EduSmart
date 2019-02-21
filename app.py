@@ -1,14 +1,22 @@
+import ast
+
+from bson import ObjectId
 from flask import Flask, render_template, flash, redirect, url_for, session, request, logging, session
 from data import Articles
 import sqlite3
 from wtforms import Form, StringField, TextAreaField, PasswordField, validators
 from functools import wraps
+from databases import db
+import classes.statistics as stat
+import classes.StatisticsStd as stdev
 import time
 import datetime
 import random
 
 app = Flask(__name__)
 Articles = Articles()
+
+now = datetime.datetime.now()
 
 @app.route('/')
 def index():
@@ -20,14 +28,8 @@ def about():
 
 @app.route('/articles')
 def articles():
-    conn = sqlite3.connect('tutorial.db')
-    c = conn.cursor()
 
-    c.execute("SELECT * FROM articles")
-    articles = c.fetchall()
-
-    c.close()
-    conn.close()
+    articles = db.article.find()
 
     if articles is not None:
         return render_template('articles.html', articles=articles)
@@ -37,15 +39,9 @@ def articles():
 
 @app.route('/article/<string:id>/')
 def article(id):
-    conn = sqlite3.connect('tutorial.db')
-    c = conn.cursor()
+    articles = db.article.find({"_id": ObjectId(id)})
 
-    c.execute("SELECT * FROM articles where id = ?", (id,))
-    articles = c.fetchone()
-
-    c.close()
-    conn.close()
-
+    print(articles)
     return render_template('article.html', articles=articles)
 
 
@@ -140,15 +136,7 @@ def logout():
 @app.route('/dashboard')
 @is_logged_in
 def dashboard():
-    conn = sqlite3.connect('tutorial.db')
-    c = conn.cursor()
-
-    c.execute("SELECT * FROM articles")
-    articles = c.fetchall()
-    print(articles)
-
-    c.close()
-    conn.close()
+    articles = db.article.find()
 
     if articles is not None:
         return render_template('dashboard.html', articles=articles)
@@ -169,13 +157,8 @@ def add_article():
         title = form.title.data
         body = form.body.data
         author = session['username']
-        conn = sqlite3.connect('tutorial.db')
-        c = conn.cursor()
-        c.execute("INSERT INTO articles (title, author, body) VALUES (?, ?, ?)",
-                  (title, author, body))
-        conn.commit()
-        c.close()
-        conn.close()
+
+        db.article.insert({"title": title, "author": author, "body": body, "date": str(now)})
 
         flash('Article Created', 'success')
 
@@ -183,6 +166,131 @@ def add_article():
 
     return render_template('add_article.html', form=form)
 
+#######################################################################################
+
+@app.route("/calc/stat/entry", methods=['POST', 'GET'])
+def stat_entry():
+    return render_template(
+        'stat_entry.html', **locals())
+
+
+@app.route("/calc/stat/entry_data", methods=['POST', 'GET'])
+def stat_entry_data():
+    if request.method == 'POST':
+        data = request.form
+        data = {'stat_array' : data['stat_array']}
+        posts = db.stat
+        post_id = posts.insert_one(data).inserted_id
+        return redirect('/calc/stat/' + str(post_id))
+    return redirect('/calc/stat/entry_data')
+
+
+@app.route('/calc/stat/<string:name>/')
+def stat_simulation(name):
+    data = db.stat.find_one({"_id": ObjectId(name)})
+    arr = ast.literal_eval(data['stat_array'])
+    arr_size = 0
+    stat_array = []
+
+    # 5, 12, 6, 8 , 14
+
+    for i in range(100):
+        stat_array.append(0)
+
+    for i in range(len(arr)):
+        stat_array[i] = int(arr[i])
+        arr_size += 1
+
+    s_temp = stdev.Statistics(int(arr_size), stat_array)
+    data = s_temp.get_data()
+
+    saved = 0
+    if 'username' in session.keys():
+        key = db.saved_simulation.find_one({'algo_id': name, "username": session['username'], "type": "Statistics",
+                                            "algo": "Unordered"})
+        if key is not None:
+            saved = 1
+    return render_template(
+        'stat_output_stddev.html', **locals())
+
+
+#########################################################################################
+
+#######################################################################################
+
+@app.route("/calc/stat/freq/entry", methods=['POST', 'GET'])
+def stat_freq_entry():
+    return render_template(
+        'stat_entry.html', **locals())
+
+
+@app.route("/calc/stat/freq/entry_data", methods=['POST', 'GET'])
+def stat_freq_entry_data():
+    if request.method == 'POST':
+        data = request.form
+        data = {'stat_array' : data['stat_array']}
+        posts = db.stat
+        post_id = posts.insert_one(data).inserted_id
+        return redirect('/calc/stat/freq/' + str(post_id))
+    return redirect('/calc/stat/freq/entry_data')
+
+
+@app.route('/calc/stat/freq/<string:name>/')
+def stat_freq_simulation(name):
+    data = db.stat.find_one({"_id": ObjectId(name)})
+    arr = ast.literal_eval(data['stat_array'])
+    arr_size = 0
+    stat_array = []
+
+    for i in range(len(arr)):
+        stat_array.append(0)
+
+    for i in range(len(arr)):
+        stat_array[i] = int(arr[i])
+        arr_size += 1
+
+    s_temp = stat.statistics(int(arr_size), stat_array)
+    data = s_temp.get_data()
+    # 26,30,45,89,89,74,54,74,26,30,30,26,78,89,54,56,14,54,14
+    saved = 0
+    if 'username' in session.keys():
+        key = db.saved_simulation.find_one({'algo_id': name, "username": session['username'], "type": "Statistics",
+                                            "algo": "Frequency"})
+        if key is not None:
+            saved = 1
+    return render_template(
+        'stat_output.html', **locals())
+
+
+@app.route('/edit_article/<string:id>', methods=['GET', 'POST'])
+def edit_article(id):
+    articles = db.article.find_one({"_id": ObjectId(id)})
+    form = ArticleForm(request.form)
+
+    form.title.data = articles['title']
+    form.body.data = articles['body']
+
+
+
+    if request.method == 'POST' and form.validate():
+        title = request.form['title']
+        body = request.form['body']
+        articles['title'] = title
+        articles['body'] = body
+        db.article.save(articles)
+
+        flash('Article Updated', 'success')
+        return redirect(url_for('dashboard'))
+    return render_template('edit_article.html', form=form)
+
+@app.route('/delete_article/<string:id>', methods=['GET', 'POST'])
+def delete_article(id):
+    db.article.remove({"_id": ObjectId(id)})
+    flash('Article Deleted', 'success')
+    return redirect(url_for('dashboard'))
+
+
+#########################################################################################
 
 if __name__ == '__main__':
     app.secret_key = 'super secret key'

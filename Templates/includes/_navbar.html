@@ -1,3 +1,33 @@
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
+<style>
+    a.black-background:link {
+        color: #3bdd79;
+    }
+    /* visited link */
+    a.black-background:visited {
+        color: #3bdd79;
+    }
+    /* mouse over link */
+    a.black-background:hover {
+        color: white;
+    }
+    a.dropdown-item:link, a.dropdown-item:visited, a.dropdown-item:hover, a.dropdown-item:active {
+        color: black;
+        background-color: white;
+    }
+    /* selected link */
+    a.black-background:active {
+        color: yellow;
+    }
+</style>
+
+
 <nav class="navbar navbar-expand-md navbar-dark bg-dark">
     <a class="navbar-brand" href="/">Forum</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
@@ -14,6 +44,9 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="/articles">Articles</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/calc/stat/entry">Statistics</a>
             </li>
         </ul>
 

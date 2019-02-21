@@ -1,10 +1,37 @@
 {% extends 'layout.html' %}
 
 {% block body %}
-  <h1>{{articles[1]}}</h1>
-  <small>Written by {{articles[2]}} on {{articles[4]}}</small>
+    <script>
+        window.onload=function () {
+            tag();
+            login();
+        }
+
+        function tag() {
+            var xhttp = new XMLHttpRequest();
+                xhttp.onreadystatechange = function() {
+                    if (this.readyState == 4 && this.status == 200) {
+                        document.getElementById("tag").innerText ="Tag : "+ this.responseText;
+                    }
+                };
+                xhttp.open("POST", "/blog/classify/", true);
+                xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                xhttp.send("id={{ id }}");
+        }
+
+
+    </script>
+  <h1>{{article['title']}}</h1>
+  <small>Written by {{article['author']}} on {{article['date']}}</small>
   <hr>
   <div>
-    {{articles[3] | safe}}
+    {{article['body'] | safe}}
   </div>
+      <br/>
+      <br/>
+      <div align="center">
+      <a href="/blog/qpredict/{{ id }}/">
+      <h2> Generate Question</h2>
+      </a></div>
+    <div id="tag" align="center"></div>
 {% endblock %}
