@@ -72,6 +72,11 @@ def delete_classroom(id):
     return redirect(url_for('classroom'))
 
 
+@app.route('/view_project/<string:id>/')
+def view_project(id):
+    classes = db.classes.find_one({"_id": ObjectId(id)})
+    return render_template('projects.html', classes=classes)
+
 
 @app.route('/articles')
 def articles():
@@ -200,6 +205,15 @@ def add_article():
         return redirect(url_for('dashboard'))
 
     return render_template('add_article.html', form=form)
+
+#######################################################################################
+
+@app.route('/upload_file/<string:id>', methods=['POST', 'GET'])
+def upload_file(id):
+
+    print('lol', id)
+    file = request.files['inputfile']
+    return file.filename
 
 #######################################################################################
 
