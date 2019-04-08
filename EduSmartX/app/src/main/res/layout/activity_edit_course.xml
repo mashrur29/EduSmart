@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="applab.com.edusmartx.EditCourse"
+    android:orientation="vertical"
+    android:padding="16dp"
+    tools:showIn="@layout/activity_edit_course">
+
+
+
+
+
+
+    <LinearLayout
+        android:paddingTop="50sp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Course Title: "
+            android:textSize="30sp" />
+
+
+        <EditText
+            android:id="@+id/course_name"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/colorPrimaryDark"
+            android:inputType="textPersonName" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:paddingTop="50sp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Instructor: "
+            android:textSize="30sp" />
+
+        <EditText
+            android:id="@+id/inst_name"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/colorPrimaryDark"
+            android:inputType="textEmailAddress" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingTop="80dp"
+            android:orientation="vertical"
+            android:paddingBottom="16dp">
+
+
+            <android.support.design.widget.FloatingActionButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/addDoneButt"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentBottom="true"
+                android:onClick="addDoneClicked"
+                android:src="@drawable/ic_done_black_24dp"
+                ></android.support.design.widget.FloatingActionButton>
+
+        </RelativeLayout>
+
+
+
+    </LinearLayout>
+
+
+
+</LinearLayout>

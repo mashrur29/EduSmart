@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">EduSmartX</string>
+    <string name="title_activity_course_details">CourseDetails</string>
+    <string name="title_activity_edit_course">EditCourse</string>
+</resources>
