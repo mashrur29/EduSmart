@@ -75,7 +75,7 @@ def delete_classroom(id):
 @app.route('/view_project/<string:id>/')
 def view_project(id):
     classes = db.classes.find_one({"_id": ObjectId(id)})
-    projects = db.projects.find()
+    projects = db.projects.find({"classCode": str(id)})
     return render_template('projects.html', classes=classes, projects=projects)
 
 
@@ -215,9 +215,9 @@ def upload_file(id):
     file = request.files['inputfile']
     author = session['username']
     title = file.filename
-    db.projects.insert({"title": title, "author": author, "fileBody": str(file), "date": str(now)})
+    db.projects.insert({"title": title, "author": author, "fileBody": str(file), "date": str(now), "classCode": str(id)})
     classes = db.classes.find_one({"_id": ObjectId(id)})
-    projects = db.projects.find()
+    projects = db.projects.find({"classCode": str(id)})
     return render_template('projects.html', classes=classes, projects=projects)
 
 #######################################################################################

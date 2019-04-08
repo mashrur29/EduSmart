@@ -1,14 +1,7 @@
 {% extends 'layout.html' %}
 
 {% block body %}
-    <br/>
-    <form method="post" action="{{url_for('upload_file', id=classes['_id'])}}" enctype="multipart/form-data" align="center">
-            <div class="form-group">
-                <label for="inputfile"> <h5> Add New </h5></label>
-                <input type="file" name="inputfile">
-            </div>
-            <button type="submit" class="btn btn-success">Turn In</button>
-    </form>
+
     <br/>
     <h1>Projects</h1>
     <hr>
@@ -29,4 +22,13 @@
       </tr>
     {% endfor %}
     </table>
+
+    <br/>
+    <form method="post" action="{{url_for('upload_file', id=classes['_id'])}}" enctype="multipart/form-data" align="center">
+            <div class="form-group">
+                <label for="inputfile"> <h5> Add New </h5></label>
+                <input type="file" name="inputfile">
+            </div>
+            <button type="submit" class="btn btn-success">Turn In</button>
+    </form>
 {% endblock %}
