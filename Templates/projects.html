@@ -12,4 +12,21 @@
     <br/>
     <h1>Projects</h1>
     <hr>
+    <table class="table table-striped">
+    <tr>
+      <th>Title</th>
+      <th>Author</th>
+      <th>Date</th>
+      <th></th>
+      <th></th>
+    </tr>
+    {% for project in projects %}
+      <tr>
+        <td>{{project['title']}}</td>
+        <td>{{project['author']}}</td>
+        <td>{{project['date']}}</td>
+        <td><a class="btn btn-success pull-right">Download</a></td>
+      </tr>
+    {% endfor %}
+    </table>
 {% endblock %}

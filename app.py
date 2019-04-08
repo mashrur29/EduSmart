@@ -1,6 +1,6 @@
 import ast
 
-from bson import ObjectId
+from bson import ObjectId, Binary
 from flask import Flask, render_template, flash, redirect, url_for, session, request, logging, session
 import sqlite3
 from wtforms import Form, StringField, TextAreaField, PasswordField, validators
@@ -75,7 +75,8 @@ def delete_classroom(id):
 @app.route('/view_project/<string:id>/')
 def view_project(id):
     classes = db.classes.find_one({"_id": ObjectId(id)})
-    return render_template('projects.html', classes=classes)
+    projects = db.projects.find()
+    return render_template('projects.html', classes=classes, projects=projects)
 
 
 @app.route('/articles')
@@ -210,10 +211,14 @@ def add_article():
 
 @app.route('/upload_file/<string:id>', methods=['POST', 'GET'])
 def upload_file(id):
-
     print('lol', id)
     file = request.files['inputfile']
-    return file.filename
+    author = session['username']
+    title = file.filename
+    db.projects.insert({"title": title, "author": author, "fileBody": str(file), "date": str(now)})
+    classes = db.classes.find_one({"_id": ObjectId(id)})
+    projects = db.projects.find()
+    return render_template('projects.html', classes=classes, projects=projects)
 
 #######################################################################################
 
