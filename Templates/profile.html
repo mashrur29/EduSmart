@@ -1,0 +1,28 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+  <br/><br/>
+  <div align="center"><h1><a href="/dashboard">@{{session['username']}}</a></h1></div>
+  <hr>
+  <ul align="center" class="w3-ul w3-card-4" style="width: 95%">
+      <li class="list-group-item" style="background: cornsilk"><h7> <b>Name:</b> {{user['name']}} </h7></li>
+      <li class="list-group-item" style="background: cornsilk"><h7> <b>Email:</b> {{user['email']}} </h7></li>
+
+    </ul>
+  <br/><br/>
+  <div align="center"><h3><b>Online Judge Submissions</b></h3></div>
+  <table class="table table-striped">
+    <tr>
+      <th>Problem</th>
+      <th>User</th>
+      <th>Verdict</th>
+    </tr>
+    {% for submission in submissions %}
+      <tr>
+        <td>{{submission['name']}}</td>
+        <td>{{submission['user']}}</td>
+        <td>{{submission['verdict']}}</td>
+      </tr>
+    {% endfor %}
+    </table>
+{% endblock %}

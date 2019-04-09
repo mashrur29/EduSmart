@@ -4,10 +4,15 @@
     <br/>
     <div class="jumbotron text-center">
         <h1>EduSmart</h1>
-        <p class="lead">This is a simple forum for create, edit and delete of articles<br> This is mainly for my SDP Lab project</p>
+        <p class="lead">A full featured learning website aimed at helping students gaining academic excellence<br> Contains necessary tools for a student to help learning</p>
         {% if session.logged_in == NULL %}
             <a href="/register" class="btn btn-primary btn-lg">Register</a>
             <a href="/login" class="btn btn-success btn-lg">Login</a>
         {% endif %}
+        <br/><br/>
+        <i>Tell me and i forget</i><br/>
+        <i>Teach me and i remember</i><br/>
+        <i>Involve me and i learn</i>
+        <p>- Benjamin Franklin</p>
     </div>
 {% endblock %}

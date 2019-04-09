@@ -1,0 +1,14 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+  <br/><br/>
+  <h1>{{problem['name']}}</h1>
+  <br/>
+  <hr>
+  <div>
+    {{problem['body'] | safe}}
+  </div>
+  <br/><br/>
+  <div align="center"><a class="btn btn-success" href="{{url_for('solve_problem', id=problem['_id'])}}" style="float: none"> Solve It!! </a></div>
+  <br/><br/>
+{% endblock %}

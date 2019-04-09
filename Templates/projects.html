@@ -18,7 +18,7 @@
         <td>{{project['title']}}</td>
         <td>{{project['author']}}</td>
         <td>{{project['date']}}</td>
-        <td><a class="btn btn-success pull-right">Download</a></td>
+        <td><a class="btn btn-success pull-right" href="{{url_for('download_file', id=project['_id'])}}">Download</a></td>
       </tr>
     {% endfor %}
     </table>

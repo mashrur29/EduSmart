@@ -1,0 +1,16 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+    <br/><br/>
+    <h1 align="center"><b>Problems</b></h1><br/>
+    <div align="center"><i>Solve programming and analytic problems to improve your skills!!<br> Please be fair and honest, dishonesty will result in penalty</i></div>
+    <br/>
+    <div align="center"><a class="btn btn-success" href="/add_problem" style="float: none"> Add Problem </a> <a class="btn btn-primary" href="/add_problem" style="float: none"> Host Contest </a></div>
+
+    <hr>
+    <ul align="center" class="w3-ul w3-card-4" style="width: 95%">
+        {% for problem in problems %}
+        <li class="list-group-item" style="background: whitesmoke"><a href="problem/{{problem['_id']}}" style="color: #0e0e0e;"> {{problem['name']}} </a></li>
+        {% endfor %}
+    </ul>
+{% endblock %}
