@@ -227,10 +227,10 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
 
 
 
-    public void updateWorkerList(String courseName, String instructorName)
+    public void updateWorkerList(CourseInfo courseInfo)
     {
-        courseTitle.add(courseName);
-        instructor.add(instructorName);
+        courseTitle.add(courseInfo.coursename);
+        instructor.add(courseInfo.instructor);
 
         notifyDataSetChanged();
 

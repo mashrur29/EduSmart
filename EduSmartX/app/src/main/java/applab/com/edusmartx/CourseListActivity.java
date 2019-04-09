@@ -9,6 +9,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
 
+import com.firebase.client.DataSnapshot;
+import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
 
 
 public class CourseListActivity extends AppCompatActivity {
@@ -56,6 +60,9 @@ public class CourseListActivity extends AppCompatActivity {
 
         recyclerView.setAdapter(adapter);
 
+        Firebase.setAndroidContext(this);
+        loadCourseList();
+
 //        if(newCatagory.length()==0)
 //        loadWorkerList("Programmer");
 //        else
@@ -93,7 +100,7 @@ public class CourseListActivity extends AppCompatActivity {
             course = data.getStringExtra("course");
             instructor = data.getStringExtra("instructor");
 
-            adapter.updateWorkerList(course,instructor);
+            adapter.updateWorkerList(new CourseInfo(course,instructor));
 //            adapter.notifyDataSetChanged();
 
         }
@@ -101,47 +108,40 @@ public class CourseListActivity extends AppCompatActivity {
 
     }
 
-//
-//    public void loadWorkerList(String catagoryName)
-//    {
-//        Firebase FDataBaseRef=new Firebase("https://newsfeed-5e0ae.firebaseio.com/Work_Catagories");
-//        Firebase workCat= FDataBaseRef.child(catagoryName);
-//        final Firebase employeeList= workCat.child("EmployeeList");
-//
-//
-//        System.out.println();
-//
-//
-//        employeeList.addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//
-//                for(DataSnapshot dsp: dataSnapshot.getChildren()){
-//
-//                    //System.out.println("adding: "+ dsp.getValue());
-//                    EmployeeProfileClass employeeProfile= dsp.getValue(EmployeeProfileClass.class);
-//                    //System.out.println("adding: "+employeeProfile.toString());
-//                    adapter.updateWorkerList(employeeProfile);
-//                    adapter.notifyDataSetChanged();
-//
-//                    System.out.println("adding: "+employeeProfile.toString());
-//
-//
-//                }
-//
-//            }
-//
-//            @Override
-//            public void onCancelled(FirebaseError firebaseError) {
-//
-//            }
-//        });
-//
-//
-//    }
+
+    public void loadCourseList()
+    {
+        Firebase FDataBaseRef=new Firebase("https://edusmart-8a0e7.firebaseio.com/");
+        Firebase courseRef= FDataBaseRef.child("Courses");
 
 
 
+        System.out.println();
 
+
+        courseRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                for(DataSnapshot dsp: dataSnapshot.getChildren()){
+
+                    //System.out.println("adding: "+ dsp.getValue());
+                    CourseInfo courseInfo= dsp.getValue(CourseInfo.class);
+                    //System.out.println("adding: "+employeeProfile.toString());
+                    adapter.updateWorkerList(courseInfo);
+                    adapter.notifyDataSetChanged();
+
+                    System.out.println("adding: "+courseInfo.toString());
+
+                }
+
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+
+            }
+        });
+    }
 
 }

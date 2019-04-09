@@ -18,7 +18,7 @@
         android:layout_height="60dp"
         android:layout_gravity="center_horizontal"
         android:layout_weight="1"
-        android:onClick="addProPicClicked"
+        android:onClick="feedClicked"
 
         android:text="NewsFeed"
         android:textSize="35sp" />
@@ -30,8 +30,8 @@
         android:layout_height="60dp"
         android:layout_gravity="center_horizontal"
         android:layout_weight="1"
-        android:onClick="addProPicClicked"
-        android:text="Assignments"
+        android:onClick="assignmentClicked"
+        android:text="Assignment"
         android:textSize="35sp" />
 
 
@@ -41,7 +41,7 @@
         android:layout_height="60dp"
         android:layout_gravity="center_horizontal"
         android:layout_weight="1"
-        android:onClick="addProPicClicked"
+        android:onClick="projectClicked"
         android:text="Projects"
         android:textSize="35sp" />
 

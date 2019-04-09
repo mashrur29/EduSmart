@@ -1,0 +1,68 @@
+{
+  "project_info": {
+    "project_number": "272003538744",
+    "firebase_url": "https://edusmart-8a0e7.firebaseio.com",
+    "project_id": "edusmart-8a0e7",
+    "storage_bucket": "edusmart-8a0e7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:272003538744:android:ebe4fe4440e3392f",
+        "android_client_info": {
+          "package_name": "applab.com.edusmartx"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCFCTJkeHazWM17rZt5Iuq8NqV3tBP7L7o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "272003538744-e447gdo58e2oj8n9jqas79k57fiv7me8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:272003538744:android:3d255f141c0c779a",
+        "android_client_info": {
+          "package_name": "com.example.iplabprojectedusmart"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "272003538744-4njamv1t3iqva1ote70od0ubc6nvh79t.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.iplabprojectedusmart",
+            "certificate_hash": "1901d30334fe6132e9016ac0debffc0cc6f6556e"
+          }
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCFCTJkeHazWM17rZt5Iuq8NqV3tBP7L7o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "272003538744-e447gdo58e2oj8n9jqas79k57fiv7me8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

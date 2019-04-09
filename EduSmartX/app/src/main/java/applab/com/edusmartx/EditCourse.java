@@ -10,6 +10,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.EditText;
 
+import com.firebase.client.Firebase;
+
+
 public class EditCourse extends AppCompatActivity {
 
 
@@ -19,6 +22,7 @@ public class EditCourse extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_course);
+        Firebase.setAndroidContext(this);
 
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.addDoneButt);
@@ -29,6 +33,15 @@ public class EditCourse extends AppCompatActivity {
                 String course,instructor;
                 course = ((EditText) findViewById(R.id.course_name)).getText().toString();
                 instructor = ((EditText) findViewById(R.id.inst_name)).getText().toString();
+
+
+                Firebase FDataBaseRef = new Firebase("https://edusmart-8a0e7.firebaseio.com/");
+                Firebase courseRef = FDataBaseRef.child("Courses");
+
+                Firebase curCourse= courseRef.child(course);
+                curCourse.child("coursename").setValue(course);
+                curCourse.child("instructor").setValue(instructor);
+
 
 
                 Intent resultIntent = new Intent();
