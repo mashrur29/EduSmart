@@ -36,6 +36,11 @@
             android:label="Select Assignment"
             android:theme="@style/AppTheme.NoActionBar"></activity>
 
+        <activity
+            android:name=".AssignmentShow"
+            android:label="Select Assignment"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+
 
 
 

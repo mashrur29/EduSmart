@@ -19,6 +19,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.firebase.client.Firebase;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
@@ -34,7 +35,7 @@ public class AssignmentSelection extends AppCompatActivity implements View.OnCli
 
     //Buttons
     private Button buttonChoose;
-    private Button buttonUpload;
+    private Button buttonUpload,buttonShow;
     private TextView notification;
     //ImageView
     private ImageView imageView;
@@ -64,6 +65,7 @@ public class AssignmentSelection extends AppCompatActivity implements View.OnCli
         //getting views from layout
         buttonChoose = (Button) findViewById(R.id.buttonChoose);
         buttonUpload = (Button) findViewById(R.id.buttonUpload);
+        buttonShow=(Button) findViewById(R.id.assshow);
 
         imageView = (ImageView) findViewById(R.id.imageView);
         notification=(TextView)findViewById(R.id.fileurl);
@@ -118,8 +120,17 @@ public class AssignmentSelection extends AppCompatActivity implements View.OnCli
 
             filePath=data.getData();
             notification.setText("Selected file: "+data.getData().getLastPathSegment());
-            filename=data.getData().getLastPathSegment();
+            filename=""+System.currentTimeMillis();
         }
+    }
+
+
+    public void showClicked(View v){
+
+            Intent intent = new Intent(AssignmentSelection.this, AssignmentShow.class);
+            intent.putExtra("currentCatagory", "assignment");
+            startActivityForResult(intent, 500);
+
     }
 
     @Override
@@ -132,6 +143,7 @@ public class AssignmentSelection extends AppCompatActivity implements View.OnCli
         else if (view == buttonUpload) {
             uploadFile();
         }
+
     }
 
     //this method will upload the file
@@ -151,7 +163,7 @@ public class AssignmentSelection extends AppCompatActivity implements View.OnCli
 
 
 
-            String fileinput="";
+            final String fileinput;
             if(currCatagory.equals("assignment")){
                 fileinput="assignment/"+filename;
             }
@@ -165,6 +177,10 @@ public class AssignmentSelection extends AppCompatActivity implements View.OnCli
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                             //if the upload is successfull
                             //hiding the progress dialog
+
+
+                            Uri downloadUri = taskSnapshot.getDownloadUrl();
+                            storeImageUrl(downloadUri,fileinput);
                             progressDialog.dismiss();
 
                             //and displaying a success toast
@@ -198,4 +214,20 @@ public class AssignmentSelection extends AppCompatActivity implements View.OnCli
             //you can display an error toast
         }
     }
+
+
+
+    //storing image in firedatabase the link of each worker where pk is NID
+    public void storeImageUrl(Uri downloadUri,String fileinput) {
+        Firebase FDataBaseRef = new Firebase("https://edusmart-8a0e7.firebaseio.com/"+fileinput);
+        String urid = downloadUri.toString();
+
+        FDataBaseRef.setValue(urid);
+//        Firebase catagoryLogoRef = FDataBaseRef.child(filename);
+//        catagoryLogoRef.setValue(urid);
+
+    }
+
+
+
 }

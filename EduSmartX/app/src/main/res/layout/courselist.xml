@@ -42,14 +42,6 @@
         android:src="@drawable/ic_add_black_24dp"
         ></android.support.design.widget.FloatingActionButton>
 
-    <Button
-        android:layout_gravity="bottom"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Show in map"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentBottom="true"
-        android:id="@+id/show_worker_map"/>
 
 
 </RelativeLayout>
