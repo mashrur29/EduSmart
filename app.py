@@ -13,8 +13,8 @@ import random
 from helpers import *
 import emoji
 
-app = Flask(__name__)
-
+app = Flask(__name__, template_folder='Templates')
+app.secret_key = 'super secret key'
 now = datetime.datetime.now()
 
 @app.route('/')
@@ -586,6 +586,5 @@ def git_page_not_found(e):
 ##########################################################################################
 
 if __name__ == '__main__':
-    app.secret_key = 'super secret key'
     app.run(debug=True)
 
