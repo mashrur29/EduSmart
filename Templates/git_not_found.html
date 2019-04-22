@@ -1,0 +1,32 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+  <div class="container">
+
+	<br/><br/><br/>
+	<h1 align="center">Git Stalker</h1>
+    <div align="center"><i>Enter the github username of the person whose profile you would like to stalk<br> For any query please contact us for more details</i></div>
+    <br/><br/><br/><br/>
+
+
+	<div class="row">
+		<div class="col s2"></div>
+	    <div class="col s8">
+		    <div class="row">
+		        <div class="col s12">
+		          <div class="card hoverable">
+
+		            <div class="card-content">
+		              <h3 class="center-align"> User not found! </h3>
+		            </div>
+		            <div class="card-action center-align">
+		              Go to &nbsp;<a class="btn btn-floating cyan pulse" href="{{ url_for('git_index') }}"><i class="material-icons">home</i></a>
+		            </div>
+		          </div>
+		        </div>
+	      	</div>
+	    </div>
+	    <div class="col s2"></div>
+	</div>
+</div>
+{% endblock %}
