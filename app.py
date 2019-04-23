@@ -1,7 +1,8 @@
 import ast
 import io
+from base64 import b64encode, b64decode
 from copy import deepcopy
-
+from werkzeug.contrib.cache import SimpleCache
 import requests
 import untangle as untangle
 from bson import ObjectId, Binary
@@ -19,6 +20,7 @@ import emoji
 import logging
 from goodreads import client
 
+cache = SimpleCache()
 app = Flask(__name__, template_folder='Templates')
 app.secret_key = 'super secret key'
 now = datetime.datetime.now()
@@ -26,6 +28,7 @@ GR_KEY = 'hCgnomVsyFTNe73zLW7Q'
 GR_SECRET = 'SR9wYYUa5tzHx0vQrVZEDghDoMBjtkItshkYwVkCcQ'
 GR_ACCESS_TOKEN = app.secret_key
 GR_ACCESS_TOKEN_SECRET = app.secret_key
+
 
 gc = client.GoodreadsClient(GR_KEY, GR_SECRET)
 
@@ -603,6 +606,48 @@ logger = logging.getLogger(__name__)
 class BookSearchForm(Form):
     search = StringField('search', [validators.Length(min=1, max=5000)])
 
+def get_author_data(authors):
+    try:
+        author = authors.author[0].cdata
+        author_id = authors.author[0].cdata
+    except:
+        author = authors.author[0].cdata
+        author_id = authors.author[0].cdata
+
+    return (author, author_id)
+
+
+def get_book_details(book_id, key):
+    payload = {"key": key}
+
+    query = requests.get("https://www.goodreads.com/book/show/{}.json".format(book_id), params=payload)
+
+    doc = untangle.parse(query.content.decode('utf-8'))
+    book_data = doc.GoodreadsResponse.book
+    book = {}
+
+    book["title"] = book_data.title.cdata
+    book['work_id'] = int(book_data.work.id.cdata.encode('utf-8'))
+    book["description"] = book_data.description.cdata
+    book["author_name"], book["author_gr_id"] = get_author_data(book_data.authors)
+    book["publisher"] = book_data.publisher.cdata
+
+    book['book_id'] = int(book_data.id.cdata.encode('utf-8'))
+    book['image_url'] = book_data.image_url.cdata
+    book["description"] = book_data.description.cdata
+
+
+    return book
+
+@app.route("/book_detail/<book_id>", methods=['GET', 'POST'])
+def show_book_details(book_id):
+    """ Displays details about a book and options to shelve, review, and see
+    availability. """
+    print('inside')
+    book = get_book_details(book_id, GR_KEY)
+    return render_template("book_detail.html", book=book)
+
+
 @app.route("/book_search", methods=["GET", "POST"])
 def search_book():
     """ Processes a user's book search from main search bar and displays results. """
@@ -612,18 +657,19 @@ def search_book():
 
     if request.method == 'POST' and form.validate():
         title = str(form.search.data)
-    print('lol', title)
     books = book_search_results(GR_KEY, title)
     search = True
     form = BookSearchForm(request.form)
     return render_template("bookread_index.html", books=books, search=search, form=form)
+
+
 
 def book_search_results(key, title):
     """Parses xml data from book.search call, and returns a list of book objects to display."""
 
     payload = {"key": key, "q": title}
     query = requests.get("https://www.goodreads.com/search.xml", params=payload)
-    print('lol', query.content)
+
     doc = untangle.parse(query.content.decode('utf-8'))
 
     results = doc.GoodreadsResponse.search.results
@@ -641,7 +687,6 @@ def book_search_results(key, title):
             book['image_url'] = work.best_book.image_url.cdata
             books.append(book)
 
-    print(len(books))
     return books
 
 

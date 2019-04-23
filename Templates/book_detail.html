@@ -1,0 +1,19 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+<br/><br/>
+<div align="center">
+<h2><a href="http://goodreads.com/book/show/{{ book['book_id'] }}" target="_blank" title="{{ book['title'] }}">{{book['title']}}</a></h2>
+</div>
+
+<h5 align="center"> Publisher: {{ book['publisher'] }}</h5>
+
+<hr>
+<div align="center" style="float: left; width: 20%;">
+    <img src="{{book['image_url']}}" alt="{{ book['title'] }}">
+</div>
+<div align="justify" style="float: left; width: 80%;">
+    {{ book['description'] | safe}}
+</div>
+
+{% endblock %}
