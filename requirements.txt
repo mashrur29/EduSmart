@@ -19,10 +19,7 @@ idna
 itsdangerous
 nose
 numpy
-packaging
-pip
 pymongo
-pyparsing
 rauth
 requests
 setuptools
