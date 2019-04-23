@@ -11,7 +11,6 @@ emoji==0.5.0
 MarkupSafe
 PyYAML
 WTForms
-appdirs
 certifi
 chardet
 click
