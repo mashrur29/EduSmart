@@ -1,4 +1,4 @@
-package applab.com.edusmartx;
+package applab.com.edusmartx.musfiq;
 
 /**
  * Created by Shade on 5/9/2016.
@@ -26,6 +26,8 @@ import android.widget.Toast;
 //import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
+
+import applab.com.edusmartx.R;
 
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHolder> {
 

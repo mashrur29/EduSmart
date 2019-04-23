@@ -1,9 +1,11 @@
-package applab.com.edusmartx;
+package applab.com.edusmartx.musfiq;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 import android.widget.Button;
 
 import com.firebase.client.DataSnapshot;
@@ -11,20 +13,20 @@ import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
 
-/**
- * Created by musfiq on 4/9/19.
- */
+import applab.com.edusmartx.R;
 
-public class AssignmentShow extends AppCompatActivity {
+
+public class CourseListActivity extends AppCompatActivity {
 
 
     RecyclerView recyclerView;
     RecyclerView.LayoutManager layoutManager;
     //RecyclerAdapter adapter;
-    assignmentListAdapter adapter;
+    RecyclerAdapter adapter;
     public String currCatagory;
 
     private Button show_worker_map;
+
 
 
     @Override
@@ -54,7 +56,7 @@ public class AssignmentShow extends AppCompatActivity {
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
 
-        adapter = new assignmentListAdapter(AssignmentShow.this);
+        adapter = new RecyclerAdapter(CourseListActivity.this,currCatagory);
 
 
         recyclerView.setAdapter(adapter);
@@ -62,16 +64,56 @@ public class AssignmentShow extends AppCompatActivity {
         Firebase.setAndroidContext(this);
         loadCourseList();
 
+//        if(newCatagory.length()==0)
+//        loadWorkerList("Programmer");
+//        else
+//        loadWorkerList(newCatagory);
+
+
+//        show_worker_map.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Intent intent = new Intent(EmployeeListActivity.this, NearWorkerMapActivity.class);
+//                startActivityForResult(intent, 500);
+//            }
+//        });
+
+
+    }
+
+    public  void addEmpClicked(View v)  // I will be able to create a new task
+    {
+        Intent intent = new Intent(CourseListActivity.this, EditCourse.class);
+//        intent.putExtra("currentCatagory", currCatagory);
+//        intent.putExtra("NID", "-1");
+        startActivityForResult(intent, 500);
+
+
 
 
     }
 
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == 500 && resultCode == RESULT_OK && data != null) {
+            String course,instructor;
+            course = data.getStringExtra("course");
+            instructor = data.getStringExtra("instructor");
+
+            adapter.updateWorkerList(new CourseInfo(course,instructor));
+//            adapter.notifyDataSetChanged();
+
+        }
+
+
+    }
+
 
     public void loadCourseList()
     {
         Firebase FDataBaseRef=new Firebase("https://edusmart-8a0e7.firebaseio.com/");
-        Firebase courseRef= FDataBaseRef.child("assignment");
+        Firebase courseRef= FDataBaseRef.child("Courses");
 
 
 
@@ -85,13 +127,12 @@ public class AssignmentShow extends AppCompatActivity {
                 for(DataSnapshot dsp: dataSnapshot.getChildren()){
 
                     //System.out.println("adding: "+ dsp.getValue());
-                    String key=dsp.getKey();
-                    String val=dsp.getValue(String.class);
+                    CourseInfo courseInfo= dsp.getValue(CourseInfo.class);
                     //System.out.println("adding: "+employeeProfile.toString());
-                    adapter.updateWorkerList(new CourseInfo(val,""));
+                    adapter.updateWorkerList(courseInfo);
                     adapter.notifyDataSetChanged();
 
-                    System.out.println("adding: "+val.toString());
+                    System.out.println("adding: "+courseInfo.toString());
 
                 }
 
@@ -103,6 +144,5 @@ public class AssignmentShow extends AppCompatActivity {
             }
         });
     }
-
 
 }

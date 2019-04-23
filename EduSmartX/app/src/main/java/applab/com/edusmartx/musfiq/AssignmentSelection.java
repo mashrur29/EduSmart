@@ -1,4 +1,4 @@
-package applab.com.edusmartx;
+package applab.com.edusmartx.musfiq;
 
 /**
  * Created by musfiq on 4/9/19.
@@ -28,6 +28,8 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.IOException;
+
+import applab.com.edusmartx.R;
 
 public class AssignmentSelection extends AppCompatActivity implements View.OnClickListener /*  implementing click listener */ {
     //a constant to track the file chooser intent
@@ -170,21 +172,30 @@ public class AssignmentSelection extends AppCompatActivity implements View.OnCli
             else
                 fileinput="project/"+filename;
 //
-            StorageReference riversRef = storageReference.child(fileinput);
+            final StorageReference riversRef = storageReference.child(fileinput);
             riversRef.putFile(filePath)
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+
+                            riversRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                @Override
+                                public void onSuccess(Uri uri) {
+                                    final Uri downloadUrl = uri;
+                                    storeImageUrl(downloadUrl,fileinput);
+                                    progressDialog.dismiss();
+
+                                    //and displaying a success toast
+                                    Toast.makeText(getApplicationContext(), "File Uploaded ", Toast.LENGTH_LONG).show();
+
+
+                                }
+                            });
                             //if the upload is successfull
                             //hiding the progress dialog
 
 
-                            Uri downloadUri = taskSnapshot.getDownloadUrl();
-                            storeImageUrl(downloadUri,fileinput);
-                            progressDialog.dismiss();
 
-                            //and displaying a success toast
-                            Toast.makeText(getApplicationContext(), "File Uploaded ", Toast.LENGTH_LONG).show();
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {

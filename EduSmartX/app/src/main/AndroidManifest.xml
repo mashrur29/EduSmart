@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="applab.com.edusmartx">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -9,38 +11,59 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        <activity android:name=".DataBase.CourseActivity"></activity>
+        <activity android:name=".DataBase.ProfileActivity" />
+        <activity android:name=".Auth.LogInActivity" />
+        <activity android:name=".Auth.SignUpActivity" />
+        <activity android:name=".Auth.MainActivity">
+
+
+
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+
+        <!--Musfiq part-->
+
+
+        <activity android:name=".musfiq.MainActivity2">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+
+        </activity>
         <activity
-            android:name=".CourseDetails"
+            android:name=".musfiq.CourseDetails"
             android:label="@string/title_activity_course_details"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".EditCourse"
+            android:name=".musfiq.EditCourse"
             android:label="@string/title_activity_edit_course"
             android:theme="@style/AppTheme.NoActionBar"></activity>
 
 
         <activity
-            android:name=".CourseListActivity"
+            android:name=".musfiq.CourseListActivity"
             android:label="Course List"
             android:theme="@style/AppTheme.NoActionBar"></activity>
 
         <activity
-            android:name=".AssignmentSelection"
+            android:name=".musfiq.AssignmentSelection"
             android:label="Select Assignment"
             android:theme="@style/AppTheme.NoActionBar"></activity>
 
         <activity
-            android:name=".AssignmentShow"
+            android:name=".musfiq.AssignmentShow"
             android:label="Select Assignment"
             android:theme="@style/AppTheme.NoActionBar"></activity>
-
 
 
 
