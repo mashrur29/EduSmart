@@ -1,0 +1,39 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+    <br/><br/>
+    <h1 align="center"><b>BOOK LIBRARY</b></h1>
+    <div align="center"><i>The best books according your search are <displayed class=""></displayed><br> For any query please contact us for more details</i></div>
+    <br/><br/>
+    <div align="center">
+    {% from "includes/_formhelpers.html" import render_field %}
+  <form method="POST" action="">
+    <div class="form-group" align="center" style="width: 200px">
+      {{render_field(form.search, class_="form-control")}}
+    </div>
+    <p align="center"><input type="submit" class="btn btn-success" value="Search Book"></p>
+  </form>
+    </div>
+
+    <hr>
+    {% if books %}
+        <div align="center">
+        {% for book in books %}
+                {% if book %}
+                <ul align="center" class="w3-ul w3-card-4" style="width: 50%; height: 350px; float: left;" >
+                    <li class="list-group-item"><a href="http://goodreads.com/book/show/{{ book['book_id'] }}" target="_blank" title="{{ book['title'] }}">{{ book["title"] }}</a></li>
+                    <li class="list-group-item"><h6>{{ book["author_fname"] }}</h6></li>
+                    <li class="list-group-item"><img src="{{book['image_url']}}" alt="{{ book['title'] }}"></li>
+                    <li class="list-group-item"><a href="/book_detail/{{ book['book_id'] }}" class="btn btn-success">See Details</a></li>
+                </ul>
+                {% endif %}
+        {% endfor %}
+            </div>
+    {% elif search and not books %}
+        <h5>Sorry, we couldn't find any books with that title.</h5>
+    {% endif %}
+
+    <br/><br/>
+
+
+{% endblock %}

@@ -54,6 +54,9 @@
                 <a class="nav-link" href="/online_judge">Online Judge</a>
             </li>
             <li class="nav-item">
+                <a class="nav-link" href="/book_search">Book Library</a>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link" href="/git">Git</a>
             </li>
         </ul>
@@ -61,7 +64,7 @@
         <ul class="navbar-nav ml-auto">
             {% if session.logged_in %}
             <li class="nav-item">
-                <a class="nav-link" href="/profile">Profile</a>
+                <a class="nav-link" href="/profile">{{session['username']}}</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="/dashboard">Dashboard</a>

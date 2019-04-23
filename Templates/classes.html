@@ -2,13 +2,14 @@
 
 {% block body %}
     <br/><br/>
-    <h1>Workspace</h1>
+    <div align="center"><h1><b>WORKSPACE</b></h1></div>
+    <br/>
+
+
     <hr>
-
-
     {% for class in classes %}
     <ul align="center" class="w3-ul w3-card-4" style="width: 95%">
-        <li class="list-group-item"><h4> <a href="view_project/{{class['_id']}}" class="btn btn-primary pull-left">{{class['title']}}</a> <a href="view_project/{{class['_id']}}" class="btn btn-success pull-right">View Projects</a></h4></li>
+        <li class="list-group-item"><h4> <a style="width: 130px" href="view_project/{{class['_id']}}" class="btn btn-primary pull-left">{{class['title']}}</a> <a style="width: 130px" href="view_project/{{class['_id']}}" class="btn btn-success pull-right">View Projects</a></h4></li>
         <li class="list-group-item"><h7> <b>Class Code:</b> {{class['code']}} </h7></li>
         <li class="list-group-item"><h7 > <b>Instructor:</b> {{class['instructor']}} </h7></li>
 
@@ -21,7 +22,11 @@
     </ul>
     <br/>
     {% endfor %}
-    <br/>
-    <div align="center"><a class="btn btn-primary" href="/add_classroom"> Add Workspace </a></div>
+
+    <div align="center">
+    <a style="width: 200px" class="btn btn-primary" href="/add_classroom"> Add Workspace </a>
+    <a style="width: 200px" class="btn btn-success" href="/add_classroom"> Manage </a>
+    </div>
     <br/><br/><br/>
+
 {% endblock %}

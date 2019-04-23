@@ -1,5 +1,9 @@
 import ast
+import io
+from copy import deepcopy
+
 import requests
+import untangle as untangle
 from bson import ObjectId, Binary
 from flask import Flask, render_template, flash, redirect, url_for, session, request, logging, session, json
 from wtforms import Form, StringField, TextAreaField, PasswordField, validators
@@ -12,10 +16,19 @@ import datetime
 import random
 from helpers import *
 import emoji
+import logging
+from goodreads import client
 
 app = Flask(__name__, template_folder='Templates')
 app.secret_key = 'super secret key'
 now = datetime.datetime.now()
+GR_KEY = 'hCgnomVsyFTNe73zLW7Q'
+GR_SECRET = 'SR9wYYUa5tzHx0vQrVZEDghDoMBjtkItshkYwVkCcQ'
+GR_ACCESS_TOKEN = app.secret_key
+GR_ACCESS_TOKEN_SECRET = app.secret_key
+
+gc = client.GoodreadsClient(GR_KEY, GR_SECRET)
+
 
 @app.route('/')
 def index():
@@ -581,6 +594,55 @@ def git_page_not_found(e):
     """Return a custom 404 error."""
     return render_template("404.html"), 404
 
+
+
+##########################################################################################
+
+logger = logging.getLogger(__name__)
+
+class BookSearchForm(Form):
+    search = StringField('search', [validators.Length(min=1, max=5000)])
+
+@app.route("/book_search", methods=["GET", "POST"])
+def search_book():
+    """ Processes a user's book search from main search bar and displays results. """
+    form = BookSearchForm(request.form)
+    #title = request.form.get("search")
+    title = 'Harry Potter'
+
+    if request.method == 'POST' and form.validate():
+        title = str(form.search.data)
+    print('lol', title)
+    books = book_search_results(GR_KEY, title)
+    search = True
+    form = BookSearchForm(request.form)
+    return render_template("bookread_index.html", books=books, search=search, form=form)
+
+def book_search_results(key, title):
+    """Parses xml data from book.search call, and returns a list of book objects to display."""
+
+    payload = {"key": key, "q": title}
+    query = requests.get("https://www.goodreads.com/search.xml", params=payload)
+    print('lol', query.content)
+    doc = untangle.parse(query.content.decode('utf-8'))
+
+    results = doc.GoodreadsResponse.search.results
+
+    books = []
+
+    if len(results) > 0:
+        for work in results.work:
+            book = {}
+
+            book['title'] = work.best_book.title.cdata
+            book['book_id'] = int(work.best_book.id.cdata.encode('utf8'))
+            book['author_id'] = int(work.best_book.author.id.cdata.encode('utf8'))
+            book['author_fname'] = work.best_book.author.name.cdata
+            book['image_url'] = work.best_book.image_url.cdata
+            books.append(book)
+
+    print(len(books))
+    return books
 
 
 ##########################################################################################
