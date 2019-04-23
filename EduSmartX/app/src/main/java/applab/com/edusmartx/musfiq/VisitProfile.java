@@ -10,7 +10,7 @@ import android.view.View;
 import applab.com.edusmartx.R;
 
 public class VisitProfile extends Activity {
-
+//    oh ho
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
