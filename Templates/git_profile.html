@@ -14,9 +14,11 @@
 		<div class="divider" style="margin-bottom: 50px;"></div>
 
 		<div class="row">
-			<div class="col s12 m3 l3">
-	        	<div class="row">
-	        		<img class="responsive-img materialboxed" src="{{ basic.avatar_url }}">
+			<div>
+	        	<div>
+	        		<div align="center">
+						<img src="{{ basic.avatar_url }}" style="width:200px;height:200px;">
+					</div>
 	        	</div>
 	        </div>
 	        <br>
@@ -27,10 +29,10 @@
 		        	{% endif %}
 		        	<small class="flow-text"><a href="{{ basic.html_url }}" target="_blank">@{{ basic.login }}</a></small><br>
 					{% if basic.bio != None %}
-		        		<span class="flow-text">Bio: <i class="red-text">{{ emoji.emojize(basic.bio) }}</i></span><br>
+		        		<span class="flow-text">Bio: <i>{{ emoji.emojize(basic.bio) }}</i></span><br>
 					{% endif %}
 		        	{% if basic.company != None %}
-		        		<span class="flow-text">Works at : <span class="red-text">{{ basic.company }}</span></span><br>
+		        		<span class="flow-text">Works at : <span>{{ basic.company }}</span></span><br>
 		        	{% endif %}
 		        	{% if basic.location != None %}
 		        		<span class="flow-text">Location : <span class="red-text">{{ basic.location }}</span></span><br>
