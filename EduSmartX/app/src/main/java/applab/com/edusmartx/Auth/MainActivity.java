@@ -9,6 +9,7 @@ import android.widget.EditText;
 
 import applab.com.edusmartx.musfiq.CourseListActivity;
 import applab.com.edusmartx.R;
+import applab.com.edusmartx.musfiq.homepage;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -27,7 +28,8 @@ public class MainActivity extends AppCompatActivity {
         signup = findViewById(R.id.signupBtn);
         login = findViewById(R.id.loginBtn);
 
-        startActivity(new Intent(this, CourseListActivity.class));
+//        startActivity(new Intent(this, CourseListActivity.class));
+        startActivity(new Intent(this, homepage.class));
     }
 
     public void openActivityLogin(View v) {
