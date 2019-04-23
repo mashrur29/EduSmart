@@ -10,6 +10,14 @@
 {% endblock %}
 {% block body %}
   <div class="container">
+		<form action="{{ url_for('git_profile') }}" method="POST">
+    	<div class="form-group" align="center">
+		<label><b>Git Id: </b></label>
+      	<input size="35" id="icon_prefix" type="text" name="username" value={{request.form.username}}>
+    	<label for="icon_prefix"></label>
+		</div>
+    	<div align="center"><button type="submit" class="btn btn-success">Submit</button></div>
+  		</form><br/>
 
 		<div class="divider" style="margin-bottom: 50px;"></div>
 
