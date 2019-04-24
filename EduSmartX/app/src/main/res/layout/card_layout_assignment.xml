@@ -21,17 +21,6 @@
 
 
 
-        <!--<ImageView-->
-            <!--android:layout_width="80dp"-->
-            <!--android:layout_height="80dp"-->
-            <!--android:id="@+id/item_image"-->
-            <!--android:layout_alignParentLeft="true"-->
-            <!--android:layout_alignParentTop="true"-->
-            <!--android:layout_marginRight="26dp"-->
-        <!--android:layout_toRightOf="@+id/item_image"-->
-        <!--android:layout_toRightOf="@+id/item_image"-->
-            <!--/>-->
-
         <TextView
 
             android:layout_width="wrap_content"
@@ -49,16 +38,7 @@
             android:layout_below="@+id/item_title"
             />
 
-        <TextView
-            android:id="@+id/edit_options"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true"
-            android:paddingRight="15dp"
-            android:textSize="32dp"
-            android:text="&#8942;"
-            android:textAppearance="?android:textAppearanceLarge" />
+
 
 
     </RelativeLayout>

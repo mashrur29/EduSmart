@@ -3,6 +3,11 @@
     package="applab.com.edusmartx">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.CAMERA"></uses-permission>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"></uses-permission>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"></uses-permission>
+
+
 
     <application
         android:allowBackup="true"
@@ -62,11 +67,6 @@
             android:theme="@style/AppTheme.NoActionBar"></activity>
 
         <activity
-            android:name=".musfiq.Classroom.AssignmentShow"
-            android:label="Select Assignment"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
-
-        <activity
             android:name=".musfiq.Homepage.homeActivityOne"
             android:label="Select Assignment"
             android:theme="@style/AppTheme.NoActionBar"></activity>
@@ -88,6 +88,12 @@
 
         <activity
             android:name=".musfiq.AttendanceClass.CalendarActivity"
+            android:label="Select Assignment"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+
+
+        <activity
+            android:name=".musfiq.Scanner.CamScanner"
             android:label="Select Assignment"
             android:theme="@style/AppTheme.NoActionBar"></activity>
 

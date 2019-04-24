@@ -7,19 +7,26 @@ package applab.com.edusmartx.musfiq.Classroom;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.provider.OpenableColumns;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
@@ -27,6 +34,7 @@ import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.io.File;
 import java.io.IOException;
 
 import applab.com.edusmartx.R;
@@ -50,7 +58,13 @@ public class AssignmentSelection extends AppCompatActivity implements View.OnCli
     private StorageReference storageReference;
     private FirebaseStorage storage;
 
-    String currCatagory,filename;
+    String currCatagory,filename,realfilename;
+
+
+    RecyclerView recyclerView;
+    RecyclerView.LayoutManager layoutManager;
+    //RecyclerAdapter adapter;
+    assignmentListAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,15 +81,81 @@ public class AssignmentSelection extends AppCompatActivity implements View.OnCli
         //getting views from layout
         buttonChoose = (Button) findViewById(R.id.buttonChoose);
         buttonUpload = (Button) findViewById(R.id.buttonUpload);
-        buttonShow=(Button) findViewById(R.id.assshow);
+//        buttonShow=(Button) findViewById(R.id.assshow);
 
-        imageView = (ImageView) findViewById(R.id.imageView);
+//        imageView = (ImageView) findViewById(R.id.imageView);
         notification=(TextView)findViewById(R.id.fileurl);
 
         //attaching listener
         buttonChoose.setOnClickListener(this);
         buttonUpload.setOnClickListener(this);
+
+
+
+
+//        for assignment showlist
+        recyclerView =
+                (RecyclerView) findViewById(R.id.recycler_view);
+//        show_worker_map= (Button) findViewById(R.id.show_worker_map);
+
+        layoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(layoutManager);
+
+        adapter = new assignmentListAdapter(AssignmentSelection.this);
+
+
+        recyclerView.setAdapter(adapter);
+
+        Firebase.setAndroidContext(this);
+        loadFileList();
+
     }
+
+
+
+    public void loadFileList()
+    {
+
+        adapter.clearList();
+        Firebase FDataBaseRef=new Firebase("https://edusmart-8a0e7.firebaseio.com/");
+        Firebase courseRef= FDataBaseRef.child(currCatagory);
+
+
+
+        System.out.println();
+
+
+        courseRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                for(DataSnapshot dsp: dataSnapshot.getChildren()){
+
+                    //System.out.println("adding: "+ dsp.getValue());
+                    String key=dsp.getKey();
+                    AssignmentInfo val=dsp.getValue(AssignmentInfo.class);
+                    //System.out.println("adding: "+employeeProfile.toString());
+                    adapter.updateWorkerList(val);
+                    adapter.notifyDataSetChanged();
+
+                    System.out.println("adding: "+val.toString());
+
+                }
+
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+
+            }
+        });
+    }
+
+
+
+
+
+
 
     //method to show file chooser
     private void showFileChooser() {
@@ -121,19 +201,23 @@ public class AssignmentSelection extends AppCompatActivity implements View.OnCli
             ///here construction
 
             filePath=data.getData();
-            notification.setText("Selected file: "+data.getData().getLastPathSegment());
+//            notification.setText("Selected file: "+data.getData().getLastPathSegment());
+            realfilename=getFileName(filePath);
+            notification.setText("Selected file: "+realfilename);
+
+
             filename=""+System.currentTimeMillis();
         }
     }
 
 
-    public void showClicked(View v){
-
-            Intent intent = new Intent(AssignmentSelection.this, AssignmentShow.class);
-            intent.putExtra("currentCatagory", "assignment");
-            startActivityForResult(intent, 500);
-
-    }
+//    public void showClicked(View v){
+//
+//            Intent intent = new Intent(AssignmentSelection.this, AssignmentShow.class);
+//            intent.putExtra("currentCatagory", "assignment");
+//            startActivityForResult(intent, 500);
+//
+//    }
 
     @Override
     public void onClick(View view) {
@@ -182,12 +266,12 @@ public class AssignmentSelection extends AppCompatActivity implements View.OnCli
                                 @Override
                                 public void onSuccess(Uri uri) {
                                     final Uri downloadUrl = uri;
-                                    storeImageUrl(downloadUrl,fileinput);
+                                    storeFileUrl(downloadUrl,fileinput);
                                     progressDialog.dismiss();
 
                                     //and displaying a success toast
                                     Toast.makeText(getApplicationContext(), "File Uploaded ", Toast.LENGTH_LONG).show();
-
+                                    loadFileList();
 
                                 }
                             });
@@ -229,14 +313,41 @@ public class AssignmentSelection extends AppCompatActivity implements View.OnCli
 
 
     //storing image in firedatabase the link of each worker where pk is NID
-    public void storeImageUrl(Uri downloadUri,String fileinput) {
+    public void storeFileUrl(Uri downloadUri,String fileinput) {
         Firebase FDataBaseRef = new Firebase("https://edusmart-8a0e7.firebaseio.com/"+fileinput);
         String urid = downloadUri.toString();
 
-        FDataBaseRef.setValue(urid);
+
+        FDataBaseRef.child("fileName").setValue(realfilename);
+        FDataBaseRef.child("fileLink").setValue(urid);
 //        Firebase catagoryLogoRef = FDataBaseRef.child(filename);
 //        catagoryLogoRef.setValue(urid);
 
+    }
+
+
+
+
+    public String getFileName(Uri uri) {
+        String result = null;
+        if (uri.getScheme().equals("content")) {
+            Cursor cursor = getContentResolver().query(uri, null, null, null, null);
+            try {
+                if (cursor != null && cursor.moveToFirst()) {
+                    result = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
+                }
+            } finally {
+                cursor.close();
+            }
+        }
+        if (result == null) {
+            result = uri.getPath();
+            int cut = result.lastIndexOf('/');
+            if (cut != -1) {
+                result = result.substring(cut + 1);
+            }
+        }
+        return result;
     }
 
 

@@ -5,6 +5,8 @@ package applab.com.edusmartx.musfiq.Classroom;
  */
 
 import android.content.Context;
+import android.content.Intent;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,6 +19,8 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import applab.com.edusmartx.R;
+import applab.com.edusmartx.musfiq.AttendanceClass.AttendanceActivity;
+import applab.com.edusmartx.musfiq.AttendanceClass.VisitProfile;
 
 //import com.firebase.client.Firebase;
 //import com.google.android.gms.tasks.OnFailureListener;
@@ -63,35 +67,37 @@ public class assignmentListAdapter extends RecyclerView.Adapter<assignmentListAd
             itemDetail =(TextView)itemView.findViewById(R.id.item_detail);
             worker_optionsText = (TextView) itemView.findViewById(R.id.edit_options);
 
-//            itemView.setOnClickListener(new View.OnClickListener() {
-//                @Override public void onClick(View v) {
-//                    int position = getAdapterPosition();
-//
-//                    Snackbar.make(v, "Click detected on itemxxxxxx " + position,
-//                            Snackbar.LENGTH_LONG)
-//                            .setAction("Action", null).show();
-//
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override public void onClick(View v) {
+                    int position = getAdapterPosition();
+
+                    Snackbar.make(v, "Click detected on itemxxxxxx " + position,
+                            Snackbar.LENGTH_LONG)
+                            .setAction("Action", null).show();
+
+
+
+                    Intent intent = new Intent(context, VisitProfile.class);
+                    intent.putExtra("profileLink", urls.get(position));
+
+                    ((AssignmentSelection)context).startActivityForResult(intent, EDIT_WORK_INTENT);
+
+
 //                    if(context instanceof CourseListActivity)
 //                    {
 ////                    Intent myIntent = new Intent(context, ProfileActivity.class);
 ////                    myIntent.putExtra("key", "hello"); //Optional parameters
 ////                    context.startActivity(myIntent);
-//                        Intent myIntent = new Intent(context, CourseDetails.class);
 ////                        myIntent.putExtra("Catagory", Catagory); //Optional parameters
 //                        myIntent.putExtra("CourseName", courseTitle.get(position)); //Optional parameters
 //                        context.startActivity(myIntent);
 //
 //
 //                    }
-////                    else if(context instanceof CatagoryActivity)
-////                    {
-////                        Intent myIntent = new Intent(context, EmployeeListActivity.class);
-////                        myIntent.putExtra("Catagory", courseTitle.get(position)); //Optional parameters
-////                        context.startActivity(myIntent);
-////                    }
 //
-//                }
-//            });
+
+                }
+            });
 
         }
 
@@ -100,7 +106,7 @@ public class assignmentListAdapter extends RecyclerView.Adapter<assignmentListAd
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         View v = LayoutInflater.from(viewGroup.getContext())
-                .inflate(R.layout.card_layout, viewGroup, false);
+                .inflate(R.layout.card_layout_assignment, viewGroup, false);
         ViewHolder viewHolder = new ViewHolder(v);
         return viewHolder;
     }
@@ -184,6 +190,15 @@ public class assignmentListAdapter extends RecyclerView.Adapter<assignmentListAd
 
     }
 
+    public void clearList(){
+
+        filename.clear();
+        urls.clear();
+        notifyDataSetChanged();
+
+
+    }
+
 
 //    void deleteRecord(int pos)
 //    {
@@ -223,10 +238,10 @@ public class assignmentListAdapter extends RecyclerView.Adapter<assignmentListAd
 
 
 
-    public void updateWorkerList(CourseInfo courseInfo)
+    public void updateWorkerList(AssignmentInfo assignInfo)
     {
-        filename.add(courseInfo.coursename);
-        urls.add(courseInfo.instructor);
+        filename.add(assignInfo.fileName);
+        urls.add(assignInfo.fileLink);
 
         notifyDataSetChanged();
 

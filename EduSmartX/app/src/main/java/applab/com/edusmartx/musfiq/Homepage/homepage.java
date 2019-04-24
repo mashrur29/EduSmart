@@ -13,6 +13,7 @@ import android.widget.Toast;
 import applab.com.edusmartx.R;
 import applab.com.edusmartx.musfiq.AttendanceClass.AttendanceActivity;
 import applab.com.edusmartx.musfiq.Classroom.CourseListActivity;
+import applab.com.edusmartx.musfiq.Scanner.CamScanner;
 
 public class homepage extends AppCompatActivity {
 
@@ -72,6 +73,14 @@ public class homepage extends AppCompatActivity {
                         Toast.makeText(homepage.this, "Attendance!!!", Toast.LENGTH_SHORT).show();
                         intent = new Intent(homepage.this, AttendanceActivity.class);
                     }
+                    else if(finalI==2){
+                        Toast.makeText(homepage.this, "Attendance!!!", Toast.LENGTH_SHORT).show();
+                        intent = new Intent(homepage.this, CamScanner.class);
+                    }
+
+
+
+
                     else {
 
                         intent = new Intent(homepage.this, homeActivityOne.class);
