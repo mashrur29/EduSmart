@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:weightSum="3"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context=".musfiq.Classroom.CourseDetails">
+
+
+    <LinearLayout
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp"
+        android:gravity="center|bottom"
+        android:orientation="vertical"
+        android:background="@drawable/newsfeed">
+
+        <Button
+            android:id="@+id/newsfeed"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_margin="10dp"
+            android:gravity="center"
+            android:text="Newsfeed"
+            android:textSize="20dp"
+            android:textStyle="bold"
+
+            android:onClick="feedClicked"
+            android:layout_alignBottom="@+id/bottomBar"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp"
+        android:gravity="center|bottom"
+        android:orientation="vertical"
+        android:background="@drawable/assignment">
+
+        <Button
+            android:id="@+id/assginment"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_margin="10dp"
+            android:gravity="center"
+            android:text="Assignment"
+            android:textSize="20dp"
+            android:textStyle="bold"
+
+            android:onClick="assignmentClicked"
+            android:layout_alignBottom="@+id/bottomBar"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp"
+        android:gravity="center|bottom"
+        android:orientation="vertical"
+        android:background="@drawable/project">
+
+        <Button
+            android:id="@+id/project"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_margin="10dp"
+
+            android:gravity="center"
+            android:text="Project"
+            android:textSize="20dp"
+            android:textStyle="bold"
+
+            android:onClick="projectClicked"
+            android:layout_alignBottom="@+id/bottomBar"/>
+
+        <!--android:background="#f5059efd"-->
+        <!--android:textColor="#FFFF"-->
+
+    </LinearLayout>
+
+
+
+</LinearLayout>
