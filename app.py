@@ -119,6 +119,33 @@ def view_project(id):
 
     return render_template('projects.html', projects=zip(projects, project_key), id=id)
 
+class ClassPostForm(Form):
+    title = StringField('Title', [validators.Length(min=1, max=200)])
+    body = TextAreaField('Body', [validators.Length(min=4)])
+
+@app.route('/enter_class/<string:id>', methods=['GET', 'POST'])
+def enter_class(id):
+    form = ClassPostForm(request.form)
+    if request.method == 'POST' and form.validate():
+        title = form.title.data
+        body = form.body.data
+        author = session['username']
+        db.child("web").child("posts").child(str(id)).push({"title": title, "author": author, "body": body, "date": str(now)})
+        flash('Post Created', 'success')
+        return redirect(url_for('enter_class', id=str(id)))
+
+    posts = {}
+    post_key = {}
+    try:
+        posts = list(db.child("web").child("posts").child(str(id)).get().val().values())
+        post_key = list(db.child("web").child("posts").child(str(id)).get().val().keys())
+    except:
+        posts={}
+        post_key={}
+
+    return render_template('enter_class.html', form=form, posts=posts, post_key=post_key)
+
+###################################################################################################
 
 @app.route('/articles')
 def articles():
@@ -164,7 +191,7 @@ def register():
         email = form.email.data
         username = form.username.data
         password = form.password.data
-        #auth.create_user_with_email_and_password(email, password)
+        auth.create_user_with_email_and_password(email, password)
         session['username'] = username
 
         db.child("web").child("users").child(username).push({"name": name, "email": email, "username": username, "password": password})
