@@ -36,8 +36,6 @@
                     android:gravity="center"
                     android:text="Media" />
 
-
-
         </LinearLayout>
 
 
