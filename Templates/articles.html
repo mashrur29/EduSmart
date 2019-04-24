@@ -5,8 +5,8 @@
     <h1 align="center"><b>ARTICLES</b></h1>
     <hr>
     <ul class="list-group">
-        {% for article in articles %}
-        <li class="list-group-item"><a href="article/{{article['_id']}}"> {{article['title']}} </a></li>
+        {% for article,key in articles %}
+            <li class="list-group-item"><a href="article/{{key}}"> {{article['title']}} </a></li>
         {% endfor %}
     </ul>
 {% endblock %}

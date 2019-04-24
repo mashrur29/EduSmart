@@ -2,13 +2,13 @@
 
 {% block body %}
   <br/><br/>
-  <h1>{{problem['name']}}</h1>
+  <h1>{{problem[2]}}</h1>
   <br/>
   <hr>
   <div>
-    {{problem['body'] | safe}}
+    {{problem[0] | safe}}
   </div>
   <br/><br/>
-  <div align="center"><a class="btn btn-success" href="{{url_for('solve_problem', id=problem['_id'])}}" style="float: none"> Solve It!! </a></div>
+  <div align="center"><a class="btn btn-success" href="{{url_for('solve_problem', id=key)}}" style="float: none"> Solve It!! </a></div>
   <br/><br/>
 {% endblock %}

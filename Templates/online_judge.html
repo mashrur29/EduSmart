@@ -9,8 +9,8 @@
 
     <hr>
     <ul align="center" class="w3-ul w3-card-4" style="width: 95%">
-        {% for problem in problems %}
-        <li class="list-group-item" style="background: whitesmoke"><a href="problem/{{problem['_id']}}" style="color: #0e0e0e;"> {{problem['name']}} </a></li>
+        {% for problem,key in problems %}
+        <li class="list-group-item" style="background: whitesmoke"><a href="problem/{{key}}" style="color: #0e0e0e;"> {{problem['name']}} </a></li>
         {% endfor %}
     </ul>
 {% endblock %}

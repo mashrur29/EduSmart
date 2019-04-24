@@ -5,16 +5,15 @@
     <div align="center"><h1><b>WORKSPACE</b></h1></div>
     <br/>
 
-
     <hr>
-    {% for class in classes %}
+    {% for class,key in classes %}
     <ul align="center" class="w3-ul w3-card-4" style="width: 95%">
-        <li class="list-group-item"><h4> <a style="width: 130px" href="view_project/{{class['_id']}}" class="btn btn-primary pull-left">{{class['title']}}</a> <a style="width: 130px" href="view_project/{{class['_id']}}" class="btn btn-success pull-right">View Projects</a></h4></li>
+        <li class="list-group-item"><h4> <a style="width: 130px" href="view_project/{{key}}" class="btn btn-primary pull-left">{{class['title']}}</a> <a style="width: 130px" href="view_project/{{key}}" class="btn btn-success pull-right">View Projects</a></h4></li>
         <li class="list-group-item"><h7> <b>Class Code:</b> {{class['code']}} </h7></li>
         <li class="list-group-item"><h7 > <b>Instructor:</b> {{class['instructor']}} </h7></li>
 
         <li class="list-group-item">
-            <form action="{{url_for('delete_classroom', id=class['_id'])}}" method="post">
+            <form action="{{url_for('delete_classroom', id=key)}}" method="post">
               <input type="hidden" name="_method" value="DELETE">
               <input type="submit" value="Remove Class" class="btn btn-danger">
           </form>

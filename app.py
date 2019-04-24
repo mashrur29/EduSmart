@@ -2,6 +2,9 @@ import ast
 import io
 from base64 import b64encode, b64decode
 from copy import deepcopy
+
+from requests.adapters import HTTPAdapter
+from urllib3 import Retry
 from werkzeug.contrib.cache import SimpleCache
 import requests
 import untangle as untangle
@@ -9,7 +12,7 @@ from bson import ObjectId, Binary
 from flask import Flask, render_template, flash, redirect, url_for, session, request, logging, session, json
 from wtforms import Form, StringField, TextAreaField, PasswordField, validators
 from functools import wraps
-from database import db
+#from database import db
 import classes.statistics as stat
 import classes.StatisticsStd as stdev
 import time
@@ -19,6 +22,8 @@ from helpers import *
 import emoji
 import logging
 from goodreads import client
+from database import firebase
+
 
 cache = SimpleCache()
 app = Flask(__name__, template_folder='Templates')
@@ -32,6 +37,9 @@ GR_ACCESS_TOKEN_SECRET = app.secret_key
 
 gc = client.GoodreadsClient(GR_KEY, GR_SECRET)
 
+auth = firebase.auth()
+db = firebase.database()
+db_storage = firebase.storage()
 
 @app.route('/')
 def index():
@@ -53,10 +61,17 @@ def is_logged_in(f):
 
 @app.route('/classroom')
 def classroom():
-    classes = db.classes.find()
+    classes = {}
+    classes_key_key = {}
+    if (db.child("classes").get().val() != None):
+        classes = list(db.child("classes").get().val().values())
+        classes_key = list(db.child("classes").get().val().keys())
+    else:
+        classes=None
+        classes_key=None
 
     if classes is not None:
-        return render_template('classes.html', classes=classes)
+        return render_template('classes.html', classes=zip(classes,classes_key))
     else:
         msg = 'No Class Found'
         return render_template('classes.html', msg=msg)
@@ -74,7 +89,7 @@ def add_classroom():
         code = form.code.data
         instructor = session['username']
 
-        db.classes.insert({"title": title, "code": code, "instructor": instructor})
+        db.child("classes").push({"title": title, "code": code, "instructor": instructor})
 
         flash('Class Created', 'success')
 
@@ -84,33 +99,49 @@ def add_classroom():
 
 @app.route('/delete_classroom/<string:id>', methods=['GET', 'POST'])
 def delete_classroom(id):
-    db.classes.remove({"_id": ObjectId(id)})
+    db.child("classes").child(str(id)).remove()
     flash('Classroom Deleted', 'success')
     return redirect(url_for('classroom'))
 
 
 @app.route('/view_project/<string:id>/')
 def view_project(id):
-    classes = db.classes.find_one({"_id": ObjectId(id)})
-    projects = db.projects.find({"classCode": str(id)})
-    return render_template('projects.html', classes=classes, projects=projects)
+
+    projects = {}
+    project_key = {}
+    if (db.child("projects").get().val() != None):
+        projects = list(db.child("projects").child(str(id)).get().val().values())
+        project_key = list(db.child("projects").child(str(id)).get().val().keys())
+    else:
+        projects = {}
+        project_key = {}
+
+    return render_template('projects.html', projects=zip(projects, project_key), id=id)
 
 
 @app.route('/articles')
 def articles():
-    articles = db.article.find()
+    articles={}
+    article_key={}
+    if (db.child("article").get().val() != None):
+        articles = list(db.child("article").get().val().values())
+        article_key = list(db.child("article").get().val().keys())
 
     if articles is not None:
-        return render_template('articles.html', articles=articles)
+        return render_template('articles.html', articles=zip(articles,article_key))
     else:
         msg = 'No Articles Found'
         return render_template('articles.html', msg=msg)
 
 @app.route('/article/<string:id>/')
 def article(id):
-    article = db.article.find_one({"_id": ObjectId(id)})
+    #articles = list(db.child("article").get().val().values())
+    #article_key = list(db.child("article").get().val().keys())
+    article={}
+    if (db.child("article").get().val() != None):
+        article = db.child("article").get().val()
+        article = article[str(id)]
 
-    print(article['title'])
     return render_template('article.html', article=article)
 
 
@@ -132,7 +163,10 @@ def register():
         email = form.email.data
         username = form.username.data
         password = form.password.data
-        db.users.insert({"name": name, "email": email, "username": username, "password": password})
+        #auth.create_user_with_email_and_password(email, password)
+        session['username'] = username
+
+        db.child("users").child(username).push({"name": name, "email": email, "username": username, "password": password})
         flash('You are now registered and can log in', 'success')
         return redirect(url_for('index'))
     return render_template('register.html', form=form)
@@ -146,15 +180,16 @@ def login():
         # getting form fields
         Username = request.form['username']
         password_candidate = request.form['password']
-        users = db.users.find({"username": str(Username)})
+        users = list(db.child("users").get().val().values())
 
 
         for user in users:
             if user is not None:
+                user = list(user.values())
+                user = user[0]
                 # Get stored hash
                 password = str(user["password"])
-
-                print('In')
+                email = str(user['email'])
 
                 # Compare Passwords
                 if password_candidate == password:
@@ -162,6 +197,7 @@ def login():
                     session['logged_in'] = True
                     session['username'] = Username
                     flash('You are now logged in', 'success')
+                    auth.sign_in_with_email_and_password(email, password)
                     return redirect(url_for('dashboard'))
                 else:
                     error = 'Invalid login'
@@ -183,10 +219,16 @@ def logout():
 @app.route('/dashboard')
 @is_logged_in
 def dashboard():
-    articles = db.article.find()
+    articles = {}
+    article_key = {}
+    #db.child("article").push({"title": "Hello World", "author": session['username'], "body": "asa", "date": str(now)})
+    if (db.child("article").get().val() != None):
+        articles = list(db.child("article").get().val().values())
+        article_key = list(db.child("article").get().val().keys())
+
 
     if articles is not None:
-        return render_template('dashboard.html', articles=articles)
+        return render_template('dashboard.html', articles=zip(articles, article_key))
     else:
         msg = 'No Articles Found'
         return render_template('dashboard.html', msg=msg)
@@ -205,7 +247,7 @@ def add_article():
         body = form.body.data
         author = session['username']
 
-        db.article.insert({"title": title, "author": author, "body": body, "date": str(now)})
+        db.child("article").push({"title": title, "author": author, "body": body, "date": str(now)})
 
         flash('Article Created', 'success')
 
@@ -215,14 +257,12 @@ def add_article():
 
 #######################################################################################
 
-@app.route('/download_file/<string:id>', methods=['POST', 'GET'])
-def download_file(id):
+@app.route('/download_file/<string:id>/<string:title>', methods=['POST', 'GET'])
+def download_file(id,title):
     print('Downloading')
-    file = db.projects.find({"_id": ObjectId(id)})
-    f = open('download', 'w')
-    str1 = 'download'
-    f.write(str1)
-    f.close()
+    print(id)
+    db_storage.child(str(id)).download(title)
+    flash("File Downloaded", "success")
     print('file downloaded')
 
     return redirect(url_for('dashboard'))
@@ -232,10 +272,18 @@ def upload_file(id):
     file = request.files['inputfile']
     author = session['username']
     title = file.filename
-    db.projects.insert({"title": title, "author": author, "fileBody": str(file), "date": str(now), "classCode": str(id)})
-    classes = db.classes.find_one({"_id": ObjectId(id)})
-    projects = db.projects.find({"classCode": str(id)})
-    return render_template('projects.html', classes=classes, projects=projects)
+    idd = db.child("projects").child(str(id)).push({"title": title, "author": author, "fileBody": str(file), "date": str(now), "classCode": str(id)})
+    db_storage.child(str(idd['name'])).put(file)
+
+    projects = {}
+    project_key = {}
+    if (db.child("projects").get().val() != None):
+        projects = list(db.child("projects").child(str(id)).get().val().values())
+        project_key = list(db.child("projects").child(str(id)).get().val().keys())
+    else:
+        projects = {}
+        project_key = {}
+    return render_template('projects.html', projects=zip(projects,project_key), id=id)
 
 #######################################################################################
 
@@ -334,28 +382,32 @@ def stat_freq_simulation(name):
 
 @app.route('/edit_article/<string:id>', methods=['GET', 'POST'])
 def edit_article(id):
-    articles = db.article.find_one({"_id": ObjectId(id)})
+    articles = list(db.child("article").child(str(id)).get().val().values())
+    print('lol', articles)
+    #articles = db.article.find_one({"_id": ObjectId(id)})
     form = ArticleForm(request.form)
 
-    form.title.data = articles['title']
-    form.body.data = articles['body']
+    str1 = ''
+    for i in range(len(articles[3])):
+        if(i>2 and articles[3][i] == '<' and articles[3][i+1] == '/' and articles[3][i+2] == 'p'):
+            break
+        if(i>2):
+            str1 += str(articles[3][i])
 
+    form.title.data = str1
+    form.body.data = articles[1]
 
-
-    if request.method == 'POST' and form.validate():
+    if request.method == 'POST':
         title = request.form['title']
         body = request.form['body']
-        articles['title'] = title
-        articles['body'] = body
-        db.article.save(articles)
-
+        db.child("article").child(str(id)).update({"title": title, "author": session['username'], "body": body, "date": str(now)})
         flash('Article Updated', 'success')
         return redirect(url_for('dashboard'))
     return render_template('edit_article.html', form=form)
 
 @app.route('/delete_article/<string:id>', methods=['GET', 'POST'])
 def delete_article(id):
-    db.article.remove({"_id": ObjectId(id)})
+    db.child("article").child(str(id)).remove()
     flash('Article Deleted', 'success')
     return redirect(url_for('dashboard'))
 
@@ -364,17 +416,24 @@ def delete_article(id):
 
 @app.route('/jobs')
 def jobs():
-    jobs = db.jobs.find()
+    jobs = {}
+    job_key = {}
+    if (db.child("jobs").get().val() != None):
+        jobs = list(db.child("jobs").get().val().values())
+        job_key = list(db.child("jobs").get().val().keys())
+    else:
+        jobs = None
+        job_key = None
 
     if jobs is not None:
-        return render_template('jobs.html', jobs=jobs)
+        return render_template('jobs.html', jobs=zip(jobs, job_key))
     else:
         msg = 'Nobody is Interested :('
         return render_template('jobs.html', msg=msg)
 
 @app.route('/delete_job/<string:id>', methods=['GET', 'POST'])
 def delete_job(id):
-    db.jobs.remove({"_id": ObjectId(id)})
+    db.child("jobs").child(str(id)).remove()
     flash('Job Deleted', 'success')
     return redirect(url_for('jobs'))
 
@@ -394,7 +453,7 @@ def add_job():
         compensation = form.compensation.data
         tutor = form.tutor.data
 
-        db.jobs.insert({"contact": contact, "subject": subject, "tutor": tutor, "compensation": compensation})
+        db.child("jobs").push({"contact": contact, "subject": subject, "tutor": tutor, "compensation": compensation})
 
         flash('Job Created', 'success')
 
@@ -411,10 +470,15 @@ languages = {"c": 1, "cpp": 2, "cpp14": 58, "java": 3,"mysql": 10,"python2": 5, 
 
 @app.route('/online_judge', methods=['GET', 'POST'])
 def online_judge():
-    problems = db.problems.find()
+    problems = {}
+    problem_key = {}
+    if(db.child("problems").get().val() != None):
+        problems = list(db.child("problems").get().val().values())
+        problem_key = list(db.child("problems").get().val().keys())
+
 
     if problems is not None:
-        return render_template('online_judge.html', problems=problems)
+        return render_template('online_judge.html', problems=zip(problems,problem_key))
     else:
         msg = 'No Problems Available'
         return render_template('online_judge.html', msg=msg)
@@ -434,7 +498,7 @@ def add_problem():
         input = form.input.data
         output = form.output.data
 
-        db.problems.insert({"name": name, "body": body, "input": input, "output": output})
+        db.child("problems").push({"name": name, "body": body, "input": input, "output": output})
 
         flash('Problem Created', 'success')
 
@@ -444,10 +508,11 @@ def add_problem():
 
 @app.route('/problem/<string:id>/')
 def problem(id):
-    problem = db.problems.find_one({"_id": ObjectId(id)})
+    print(id)
+    problem = list(db.child("problems").child(str(id)).get().val().values())
+    problem_key = str(id)
 
-    print(problem['name'])
-    return render_template('problem.html', problem=problem)
+    return render_template('problem.html', problem=problem,key=problem_key)
 
 class SolveProblemForm(Form):
     code = TextAreaField('Source Code', [validators.Length(min=1)])
@@ -457,11 +522,16 @@ class SolveProblemForm(Form):
 @app.route('/add_problem/<string:id>/', methods=['GET', 'POST'])
 def solve_problem(id):
     form = SolveProblemForm(request.form)
-    problem = db.problems.find_one({"_id": ObjectId(id)})
+
+    problem = list(db.child("problems").child(str(id)).get().val().values())
+    problem_key = list(db.child("problems").get().val())
+    problem_key = problem_key[0]
+
+
     if request.method == 'POST' and form.validate():
         code = form.code.data
         language = form.lang.data
-        input_ = problem['input']
+        input_ = problem[1]
         if input_ == "":
             input_ = " "
 
@@ -469,7 +539,7 @@ def solve_problem(id):
         guest = hackerrank_api(code=code, language=language, input_=input_)
         print(guest['output'])
         if guest['result'] == "Successfully Executed":
-            if(guest['output'].rstrip() == problem['output']):
+            if(guest['output'].rstrip() == problem[3]):
                 verdict = 'Accepted'
                 flash('Accepted', 'success')
             else:
@@ -477,7 +547,7 @@ def solve_problem(id):
         else:
             flash('Compilation Error', 'warning')
 
-        db.submission.insert({"name": problem['name'], "user": session['username'], "verdict": verdict})
+        db.child("submission").child(session['username']).push({"name": problem[2], "user": session['username'], "verdict": verdict})
         return redirect(url_for('online_judge'))
 
     return render_template('solve_problem.html', form=form, languages=languages)
@@ -542,12 +612,14 @@ def hackerrank_api(username=None, title=None, code=None, language=None, input_=N
 
 @app.route('/profile')
 def profile():
-    users = db.users.find({"username": str(session['username'])})
-    curuser = None
-    for user in users:
-        curuser = user
-        break
-    submissions = db.submission.find({"user": str(session['username'])})
+    user = list(db.child("users").child(session['username']).get().val().values())
+    curuser = user[0]
+    #submissions = db.submission.find({"user": str(session['username'])})
+    submissions={}
+    try:
+        submissions = list(db.child("submission").child(session['username']).get().val().values())
+    except:
+        submissions = {}
     return render_template('profile.html', user=curuser, submissions=submissions)
 
 
@@ -555,18 +627,14 @@ def profile():
 
 @app.route('/git')
 def git_index():
-	"""Index page"""
 	return render_template("git_index.html")
 
 @app.route('/git/about')
 def git_about():
-	"""About page"""
 	return render_template("about.html")
 
 @app.route('/git/profile', methods=["GET", "POST"])
 def git_profile():
-	"""Render profile according to request"""
-
 	# Get username from post method
 	user = request.form.get("username")
 	#print user
@@ -594,7 +662,6 @@ def git_profile():
 
 @app.errorhandler(404)
 def git_page_not_found(e):
-    """Return a custom 404 error."""
     return render_template("404.html"), 404
 
 
@@ -639,25 +706,26 @@ def get_book_details(book_id, key):
 
     return book
 
+
+
 @app.route("/book_detail/<book_id>", methods=['GET', 'POST'])
 def show_book_details(book_id):
-    """ Displays details about a book and options to shelve, review, and see
-    availability. """
     print('inside')
     book = get_book_details(book_id, GR_KEY)
+    time.sleep(100)
     return render_template("book_detail.html", book=book)
 
 
 @app.route("/book_search", methods=["GET", "POST"])
 def search_book():
-    """ Processes a user's book search from main search bar and displays results. """
     form = BookSearchForm(request.form)
     #title = request.form.get("search")
-    title = 'Harry Potter'
+    title = 'manga'
 
     if request.method == 'POST' and form.validate():
         title = str(form.search.data)
     books = book_search_results(GR_KEY, title)
+    #time.sleep(10000)
     search = True
     form = BookSearchForm(request.form)
     return render_template("bookread_index.html", books=books, search=search, form=form)
@@ -665,10 +733,25 @@ def search_book():
 
 
 def book_search_results(key, title):
-    """Parses xml data from book.search call, and returns a list of book objects to display."""
-
     payload = {"key": key, "q": title}
-    query = requests.get("https://www.goodreads.com/search.xml", params=payload)
+
+    url = "http://www.goodreads.com/search.xml"
+    query = ''
+    ok = False
+    while ok == False:
+        try:
+            query = requests.get(url, params=payload)
+            ok=True
+            break
+        except:
+            print("Connection refused by the server..")
+            print("Let me sleep for 5 seconds")
+            print("ZZzzzz...")
+            time.sleep(5)
+            print("Was a nice sleep, now let me continue...")
+            continue
+
+
 
     doc = untangle.parse(query.content.decode('utf-8'))
 

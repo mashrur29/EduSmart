@@ -9,14 +9,14 @@
     <hr>
 
 
-    {% for job in jobs %}
+    {% for job,key in jobs %}
     <ul align="center" class="w3-ul w3-card-4" style="width: 50%; float: left" >
         <li class="list-group-item list-group-item-info"><h4> <a href="{{job['contact']}}">Contact</a></h4></li>
         <li class="list-group-item"><h7> <b>Subject:</b> {{job['subject']}} </h7></li>
         <li class="list-group-item"><h7 > <b>Tutor Name:</b> {{job['tutor']}} </h7></li>
         <li class="list-group-item"><h7 > <b>Compensation:</b> {{job['compensation']}} </h7></li>
         <li class="list-group-item">
-            <form action="{{url_for('delete_job', id=job['_id'])}}" method="post">
+            <form action="{{url_for('delete_job', id=key)}}" method="post">
                 <input type="hidden" name="_method" value="DELETE">
                 <input type="submit" value="Report" class="btn btn-danger">
                 <a class="btn btn-success" href="{{job['contact']}}" style="float: none"> Hire </a>

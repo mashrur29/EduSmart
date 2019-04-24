@@ -27,3 +27,4 @@ untangle
 urllib3
 wtf
 xmltodict
+pyrebase
