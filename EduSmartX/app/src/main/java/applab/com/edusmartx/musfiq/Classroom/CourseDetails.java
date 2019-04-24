@@ -15,6 +15,7 @@ public class CourseDetails extends AppCompatActivity {
         setContentView(R.layout.activity_course_details_2);
 
     }
+    ///
 
 
 
