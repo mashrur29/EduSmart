@@ -14,7 +14,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
-import applab.com.edusmartx.musfiq.CourseListActivity;
+import applab.com.edusmartx.musfiq.Classroom.CourseListActivity;
 import applab.com.edusmartx.R;
 
 public class SignUpActivity extends AppCompatActivity {

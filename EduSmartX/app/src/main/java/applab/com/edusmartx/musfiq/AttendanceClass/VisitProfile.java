@@ -1,4 +1,4 @@
-package applab.com.edusmartx.musfiq;
+package applab.com.edusmartx.musfiq.AttendanceClass;
 
 
 import android.app.Activity;
@@ -14,7 +14,13 @@ public class VisitProfile extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.m_visit_profile);
+//        setContentView(R.layout.m_visit_profile);
+
+        Intent intent = getIntent();
+        String profileLink = intent.getStringExtra("profileLink");
+//        System.out.println(value);
+
+        goToUrl(profileLink);
     }
 
     public void goToSo(View view) {

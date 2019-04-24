@@ -1,4 +1,4 @@
-package applab.com.edusmartx.musfiq;
+package applab.com.edusmartx.musfiq.AttendanceClass;
 
 /**
  * Created by Shade on 5/9/2016.
@@ -19,39 +19,53 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+
+import applab.com.edusmartx.R;
+import applab.com.edusmartx.musfiq.Classroom.CourseDetails;
+import applab.com.edusmartx.musfiq.Classroom.CourseListActivity;
+
 //import com.firebase.client.Firebase;
 //import com.google.android.gms.tasks.OnFailureListener;
 //import com.google.android.gms.tasks.OnSuccessListener;
 //import com.google.firebase.storage.FirebaseStorage;
 //import com.google.firebase.storage.StorageReference;
 
-import java.util.ArrayList;
-
-import applab.com.edusmartx.R;
-
-public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHolder> {
+public class AttendanceAdapter extends RecyclerView.Adapter<AttendanceAdapter.ViewHolder> {
 
 
     Context context;
-    ArrayList<String> courseTitle, instructor;
+    ArrayList<String> studentName, studentRoll,profileLink;
     String Catagory;
 
     int EDIT_WORK_INTENT=2;
 
-    public RecyclerAdapter(Context mainActivity, String Catagory) {
+    public AttendanceAdapter(Context mainActivity) {
 
         context = mainActivity;
-        courseTitle =new ArrayList<>();
-        instructor =new ArrayList<>();
+        studentName =new ArrayList<>();
+        studentRoll =new ArrayList<>();
+        profileLink =new ArrayList<>();
 
-        this.Catagory=Catagory;
-    }
+        }
 
 
 
 
     private static final int REQUEST_CALL = 1;
     private EditText mEditTextNumber;
+
+    public ArrayList<String> getStudentName() {
+        return studentName;
+    }
+
+    public ArrayList<String> getStudentRoll() {
+        return studentRoll;
+    }
+
+    public ArrayList<String> getProfileLink() {
+        return profileLink;
+    }
 
     public class ViewHolder extends RecyclerView.ViewHolder{
 
@@ -84,7 +98,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
 //                    context.startActivity(myIntent);
                         Intent myIntent = new Intent(context, CourseDetails.class);
 //                        myIntent.putExtra("Catagory", Catagory); //Optional parameters
-                        myIntent.putExtra("CourseName", courseTitle.get(position)); //Optional parameters
+                        myIntent.putExtra("CourseName", studentName.get(position)); //Optional parameters
                         context.startActivity(myIntent);
 
 
@@ -92,7 +106,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
 //                    else if(context instanceof CatagoryActivity)
 //                    {
 //                        Intent myIntent = new Intent(context, EmployeeListActivity.class);
-//                        myIntent.putExtra("Catagory", courseTitle.get(position)); //Optional parameters
+//                        myIntent.putExtra("Catagory", studentName.get(position)); //Optional parameters
 //                        context.startActivity(myIntent);
 //                    }
 
@@ -113,8 +127,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(final ViewHolder viewHolder, final int i) {
-        viewHolder.itemTitle.setText(courseTitle.get(i));
-        viewHolder.itemDetail.setText(instructor.get(i));
+        viewHolder.itemTitle.setText(studentName.get(i));
+        viewHolder.itemDetail.setText(studentRoll.get(i));
        // viewHolder.itemImage.setImageResource(images[i]);
 
 
@@ -128,12 +142,26 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
                 //creating a popup menu
                 PopupMenu popup = new PopupMenu(context, viewHolder.worker_optionsText);
                 //inflating menu from xml resource
-                popup.inflate(R.menu.edit_option_menu);
+                popup.inflate(R.menu.edit_option_menu2);
                 //adding click listener
                 popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
                         switch (item.getItemId()) {
+
+
+                            case R.id.Edit:
+
+
+                                Intent intent = new Intent(context, VisitProfile.class);
+                                intent.putExtra("profileLink", profileLink.get(i));
+                                System.out.println("name"+studentName.get(i)+"link"+profileLink.get(i));
+
+                                ((AttendanceActivity)context).startActivityForResult(intent, EDIT_WORK_INTENT);
+
+//                                DeleteFromList(i,2);
+                                break;
+
 
 //                            case R.id.Edit:
 //
@@ -175,7 +203,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
 
     @Override
     public int getItemCount() {
-        return courseTitle.size();
+        return studentName.size();
     }
 
 
@@ -183,13 +211,21 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
     {
         Log.d("RecyclerAdapter","deleted delete "+pos);
        // deleteRecord(pos);
-        courseTitle.remove(pos);
-        instructor.remove(pos);
+        studentName.remove(pos);
+        studentRoll.remove(pos);
+        profileLink.remove(pos);
 
         this.notifyDataSetChanged();
 
     }
 
+    public void clearList(){
+
+        studentName.clear();
+        studentRoll.clear();
+        profileLink.clear();
+
+    }
 
 //    void deleteRecord(int pos)
 //    {
@@ -229,10 +265,13 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
 
 
 
-    public void updateWorkerList(CourseInfo courseInfo)
+    public void updateWorkerList(AttendedStudentInfo student)
     {
-        courseTitle.add(courseInfo.coursename);
-        instructor.add(courseInfo.instructor);
+        this.studentName.add(student.studentName);
+        this.studentRoll.add(student.studentRoll);
+        this.profileLink.add(student.profileLink);
+
+        System.out.println("yyyy"+student.studentName+" "+student.studentRoll+" "+student.profileLink);
 
         notifyDataSetChanged();
 

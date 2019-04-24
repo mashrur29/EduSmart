@@ -11,16 +11,44 @@
 
     <string name="select">Select</string>
 
-    <string-array name="shopping_item">
-        <item>Musfiq Shohan</item>
-        <item>Sausage</item>
-        <item>Milk</item>
-        <item>Garlic</item>
-        <item>Beef</item>
-        <item>Veggies</item>
-        <item>Olive</item>
-        <item>Cheese</item>
-        <item>Tuna</item>
-        <item>Mushrooms</item>
+    <string-array name="studnt_name">
+        <item>Kashob Roy</item>
+        <item>Saad-Mahmud</item>
+        <item>Md.Musfiqur Rahman</item>
+        <item>Mashrur Rashik</item>
+        <item>Amit Roy</item>
+        <item>Tanjid Hasan Tonmoy</item>
+        <item>Rahat-Noman</item>
+        <item>MD. Rakibul Hasan</item>
+        <item>Syeed zaoad Abrar</item>
+        <item>Palash Roy</item>
     </string-array>
+
+    <!--<string-array name="student_roll">-->
+        <!--<item>05</item>-->
+        <!--<item>Sausage</item>-->
+        <!--<item>Milk</item>-->
+        <!--<item>Garlic</item>-->
+        <!--<item>Beef</item>-->
+        <!--<item>Veggies</item>-->
+        <!--<item>Olive</item>-->
+        <!--<item>Cheese</item>-->
+        <!--<item>Tuna</item>-->
+        <!--<item>Mushrooms</item>-->
+    <!--</string-array>-->
+
+
+    <string-array name="student_link">
+        <item>https://github.com/forkkr</item>
+        <item>https://github.com/Saad-Mahmud</item>
+        <item>https://github.com/Musfiqshohan</item>
+        <item>https://github.com/mashrur29</item>
+        <item>https://github.com/AmitRoy7</item>
+        <item>https://github.com/thTonmoy</item>
+        <item>https://github.com/Rahat-Noman</item>
+        <item>https://github.com/RHT-20</item>
+        <item>https://github.com/zaoad</item>
+        <item>https://github.com/PalashRoy975</item>
+    </string-array>
+
 </resources>

@@ -1,4 +1,4 @@
-package applab.com.edusmartx.musfiq;
+package applab.com.edusmartx.musfiq.Classroom;
 
 /**
  * Created by Shade on 5/9/2016.
@@ -19,32 +19,35 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.ArrayList;
-
-import applab.com.edusmartx.R;
-
 //import com.firebase.client.Firebase;
 //import com.google.android.gms.tasks.OnFailureListener;
 //import com.google.android.gms.tasks.OnSuccessListener;
 //import com.google.firebase.storage.FirebaseStorage;
 //import com.google.firebase.storage.StorageReference;
 
-public class AttendanceAdapter extends RecyclerView.Adapter<AttendanceAdapter.ViewHolder> {
+import com.firebase.client.Firebase;
+
+import java.util.ArrayList;
+
+import applab.com.edusmartx.R;
+
+public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHolder> {
 
 
     Context context;
-    ArrayList<String> studentName, studentRoll;
+    ArrayList<String> courseTitle, instructor;
     String Catagory;
 
     int EDIT_WORK_INTENT=2;
 
-    public AttendanceAdapter(Context mainActivity) {
+    public RecyclerAdapter(Context mainActivity, String Catagory) {
 
         context = mainActivity;
-        studentName =new ArrayList<>();
-        studentRoll =new ArrayList<>();
+        courseTitle =new ArrayList<>();
+        instructor =new ArrayList<>();
 
-        }
+        this.Catagory=Catagory;
+    }
 
 
 
@@ -83,7 +86,7 @@ public class AttendanceAdapter extends RecyclerView.Adapter<AttendanceAdapter.Vi
 //                    context.startActivity(myIntent);
                         Intent myIntent = new Intent(context, CourseDetails.class);
 //                        myIntent.putExtra("Catagory", Catagory); //Optional parameters
-                        myIntent.putExtra("CourseName", studentName.get(position)); //Optional parameters
+                        myIntent.putExtra("CourseName", courseTitle.get(position)); //Optional parameters
                         context.startActivity(myIntent);
 
 
@@ -91,7 +94,7 @@ public class AttendanceAdapter extends RecyclerView.Adapter<AttendanceAdapter.Vi
 //                    else if(context instanceof CatagoryActivity)
 //                    {
 //                        Intent myIntent = new Intent(context, EmployeeListActivity.class);
-//                        myIntent.putExtra("Catagory", studentName.get(position)); //Optional parameters
+//                        myIntent.putExtra("Catagory", courseTitle.get(position)); //Optional parameters
 //                        context.startActivity(myIntent);
 //                    }
 
@@ -112,8 +115,8 @@ public class AttendanceAdapter extends RecyclerView.Adapter<AttendanceAdapter.Vi
 
     @Override
     public void onBindViewHolder(final ViewHolder viewHolder, final int i) {
-        viewHolder.itemTitle.setText(studentName.get(i));
-        viewHolder.itemDetail.setText(studentRoll.get(i));
+        viewHolder.itemTitle.setText(courseTitle.get(i));
+        viewHolder.itemDetail.setText(instructor.get(i));
        // viewHolder.itemImage.setImageResource(images[i]);
 
 
@@ -133,18 +136,6 @@ public class AttendanceAdapter extends RecyclerView.Adapter<AttendanceAdapter.Vi
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
                         switch (item.getItemId()) {
-
-
-                            case R.id.Edit:
-
-
-                                Intent intent = new Intent(context, VisitProfile.class);
-                                intent.putExtra("currentCatagory", Catagory);
-                                ((AttendanceActivity)context).startActivityForResult(intent, EDIT_WORK_INTENT);
-
-//                                DeleteFromList(i,2);
-                                break;
-
 
 //                            case R.id.Edit:
 //
@@ -186,7 +177,7 @@ public class AttendanceAdapter extends RecyclerView.Adapter<AttendanceAdapter.Vi
 
     @Override
     public int getItemCount() {
-        return studentName.size();
+        return courseTitle.size();
     }
 
 
@@ -194,19 +185,23 @@ public class AttendanceAdapter extends RecyclerView.Adapter<AttendanceAdapter.Vi
     {
         Log.d("RecyclerAdapter","deleted delete "+pos);
        // deleteRecord(pos);
-        studentName.remove(pos);
-        studentRoll.remove(pos);
 
+
+
+
+
+        Firebase FDataBaseRef = new Firebase("https://edusmart-8a0e7.firebaseio.com/Courses");
+        Firebase DateRef=FDataBaseRef.child(courseTitle.get(pos));
+        DateRef.removeValue();
+
+
+
+        courseTitle.remove(pos);
+        instructor.remove(pos);
         this.notifyDataSetChanged();
 
     }
 
-    public void clearList(){
-
-        studentName.clear();
-        studentRoll.clear();
-
-    }
 
 //    void deleteRecord(int pos)
 //    {
@@ -246,10 +241,10 @@ public class AttendanceAdapter extends RecyclerView.Adapter<AttendanceAdapter.Vi
 
 
 
-    public void updateWorkerList(String studentName,String studentRoll )
+    public void updateWorkerList(CourseInfo courseInfo)
     {
-        this.studentName.add(studentName);
-        this.studentRoll.add("Roll:"+studentRoll);
+        courseTitle.add(courseInfo.coursename);
+        instructor.add(courseInfo.instructor);
 
         notifyDataSetChanged();
 

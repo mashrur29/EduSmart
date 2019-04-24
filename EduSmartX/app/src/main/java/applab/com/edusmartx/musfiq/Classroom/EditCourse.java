@@ -1,4 +1,4 @@
-package applab.com.edusmartx.musfiq;
+package applab.com.edusmartx.musfiq.Classroom;
 
 import android.app.Activity;
 import android.content.Intent;

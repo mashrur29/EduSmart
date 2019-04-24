@@ -9,13 +9,42 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:orientation="vertical"
-    tools:context=".musfiq.AttendanceActivity">
+    tools:context=".musfiq.AttendanceClass.AttendanceActivity">
 
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:orientation="vertical"
+
+
         android:gravity="center">
+
+        <TextView
+            android:id="@+id/date"
+            android:layout_width="wrap_content"
+            android:layout_height="51dp"
+            android:paddingTop="10dp"
+            android:text="Date:"
+            android:textAlignment="center"
+            android:textSize="25dp" />
+            <!--android:visibility="visible"-->
+            <!--app:layout_constraintBottom_toBottomOf="parent"-->
+            <!--app:layout_constraintHorizontal_bias="0.0"-->
+            <!--app:layout_constraintLeft_toLeftOf="parent"-->
+            <!--app:layout_constraintRight_toRightOf="parent"-->
+            <!--app:layout_constraintTop_toTopOf="parent"-->
+            <!--app:layout_constraintVertical_bias="0.219"-->
+
+
+        <Button
+            android:id="@+id/btngocalendar"
+            android:layout_width="266dp"
+            android:layout_height="47dp"
+            android:text="Go to calendar"
+            tools:layout_editor_absoluteX="47dp"
+            tools:layout_editor_absoluteY="8dp" />
 
 
         <Button
@@ -24,7 +53,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="10dp"
             android:text="@string/make_an_order" />
 
     <TextView
@@ -46,7 +75,7 @@
         android:layout_height="match_parent"
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
-        android:paddingTop="80dp"
+        android:paddingTop="10dp"
         android:orientation="vertical"
         android:paddingBottom="16dp">
 
@@ -72,15 +101,15 @@
             android:layout_width="match_parent"
             />
 
-        <!--<android.support.design.widget.FloatingActionButton-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:id="@+id/addEmployeeButt"-->
-            <!--android:layout_alignParentRight="true"-->
-            <!--android:layout_alignParentBottom="true"-->
-            <!--android:onClick="addEmpClicked"-->
-            <!--android:src="@drawable/ic_add_black_24dp"-->
-            <!--&gt;</android.support.design.widget.FloatingActionButton>-->
+        <android.support.design.widget.FloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/addEmployeeButt"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:onClick="addDoneClicked"
+            android:src="@drawable/ic_done_black_24dp"
+            ></android.support.design.widget.FloatingActionButton>
 
 
     </RelativeLayout>

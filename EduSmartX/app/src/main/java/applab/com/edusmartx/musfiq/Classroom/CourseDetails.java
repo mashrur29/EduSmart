@@ -1,4 +1,4 @@
-package applab.com.edusmartx.musfiq;
+package applab.com.edusmartx.musfiq.Classroom;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,7 +12,7 @@ public class CourseDetails extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_course_details);
+        setContentView(R.layout.activity_course_details_2);
 
     }
 

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".musfiq.homepage">
+    tools:context=".musfiq.Homepage.homepage">
 
 
 
@@ -22,7 +22,7 @@
 
             <TextView
                 android:id="@+id/textGrid"
-                android:text="GRID LAYOUT"
+                android:text="EduSmart"
                 android:textSize="34sp"
                 android:textColor="@android:color/white"
                 android:layout_centerInParent="true"

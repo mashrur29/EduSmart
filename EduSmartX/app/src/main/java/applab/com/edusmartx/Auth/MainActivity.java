@@ -7,9 +7,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-import applab.com.edusmartx.musfiq.CourseListActivity;
 import applab.com.edusmartx.R;
-import applab.com.edusmartx.musfiq.homepage;
+import applab.com.edusmartx.musfiq.Homepage.homepage;
 
 public class MainActivity extends AppCompatActivity {
 

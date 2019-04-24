@@ -3,10 +3,10 @@
 
     <item
         android:id="@+id/Edit"
-        android:title="Others" />
+        android:title="Visit profile" />
 
     <item
         android:id="@+id/Delete"
-        android:title="Delete " />
+        android:title="Absent " />
 
 </menu>

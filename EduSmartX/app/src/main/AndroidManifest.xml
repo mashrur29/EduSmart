@@ -31,7 +31,7 @@
         <!--Musfiq part-->
 
 
-        <activity android:name=".musfiq.MainActivity2">
+        <activity android:name=".musfiq.Classroom.MainActivity2">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -41,49 +41,56 @@
 
         </activity>
         <activity
-            android:name=".musfiq.CourseDetails"
+            android:name=".musfiq.Classroom.CourseDetails"
             android:label="@string/title_activity_course_details"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".musfiq.EditCourse"
+            android:name=".musfiq.Classroom.EditCourse"
             android:label="@string/title_activity_edit_course"
             android:theme="@style/AppTheme.NoActionBar"></activity>
 
 
         <activity
-            android:name=".musfiq.CourseListActivity"
-            android:label="Course List"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:name=".musfiq.Classroom.CourseListActivity"
+            android:label="Course List">
+            <!--android:theme="@style/AppTheme.NoActionBar">-->
+        </activity>
 
         <activity
-            android:name=".musfiq.AssignmentSelection"
+            android:name=".musfiq.Classroom.AssignmentSelection"
             android:label="Select Assignment"
             android:theme="@style/AppTheme.NoActionBar"></activity>
 
         <activity
-            android:name=".musfiq.AssignmentShow"
+            android:name=".musfiq.Classroom.AssignmentShow"
             android:label="Select Assignment"
             android:theme="@style/AppTheme.NoActionBar"></activity>
 
         <activity
-            android:name=".musfiq.homeActivityOne"
+            android:name=".musfiq.Homepage.homeActivityOne"
             android:label="Select Assignment"
             android:theme="@style/AppTheme.NoActionBar"></activity>
 
         <activity
-            android:name=".musfiq.homepage"
+            android:name=".musfiq.Homepage.homepage"
             android:label="Select Assignment"
             android:theme="@style/AppTheme.NoActionBar"></activity>
 
         <activity
-            android:name=".musfiq.AttendanceActivity"
+            android:name=".musfiq.AttendanceClass.AttendanceActivity"
             android:label="Select Assignment"
             android:theme="@style/AppTheme.NoActionBar"></activity>
 
  <activity
-            android:name=".musfiq.VisitProfile"
+            android:name=".musfiq.AttendanceClass.VisitProfile"
             android:label="Select Assignment"
             android:theme="@style/AppTheme.NoActionBar"></activity>
+
+        <activity
+            android:name=".musfiq.AttendanceClass.CalendarActivity"
+            android:label="Select Assignment"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+
 
 
 
