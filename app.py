@@ -63,9 +63,9 @@ def is_logged_in(f):
 def classroom():
     classes = {}
     classes_key_key = {}
-    if (db.child("classes").get().val() != None):
-        classes = list(db.child("classes").get().val().values())
-        classes_key = list(db.child("classes").get().val().keys())
+    if (db.child("web").child("classes").get().val() != None):
+        classes = list(db.child("web").child("classes").get().val().values())
+        classes_key = list(db.child("web").child("classes").get().val().keys())
     else:
         classes=None
         classes_key=None
@@ -89,7 +89,7 @@ def add_classroom():
         code = form.code.data
         instructor = session['username']
 
-        db.child("classes").push({"title": title, "code": code, "instructor": instructor})
+        db.child("web").child("classes").push({"title": title, "code": code, "instructor": instructor})
 
         flash('Class Created', 'success')
 
@@ -99,7 +99,7 @@ def add_classroom():
 
 @app.route('/delete_classroom/<string:id>', methods=['GET', 'POST'])
 def delete_classroom(id):
-    db.child("classes").child(str(id)).remove()
+    db.child("web").child("classes").child(str(id)).remove()
     flash('Classroom Deleted', 'success')
     return redirect(url_for('classroom'))
 
@@ -109,12 +109,13 @@ def view_project(id):
 
     projects = {}
     project_key = {}
-    if (db.child("projects").get().val() != None):
-        projects = list(db.child("projects").child(str(id)).get().val().values())
-        project_key = list(db.child("projects").child(str(id)).get().val().keys())
-    else:
-        projects = {}
-        project_key = {}
+    try:
+        projects = list(db.child("web").child("projects").child(str(id)).get().val().values())
+        project_key = list(db.child("web").child("projects").child(str(id)).get().val().keys())
+    except:
+        projects = None
+        project_key = None
+        return render_template('projects.html', id=id)
 
     return render_template('projects.html', projects=zip(projects, project_key), id=id)
 
@@ -123,9 +124,9 @@ def view_project(id):
 def articles():
     articles={}
     article_key={}
-    if (db.child("article").get().val() != None):
-        articles = list(db.child("article").get().val().values())
-        article_key = list(db.child("article").get().val().keys())
+    if (db.child("web").child("article").get().val() != None):
+        articles = list(db.child("web").child("article").get().val().values())
+        article_key = list(db.child("web").child("article").get().val().keys())
 
     if articles is not None:
         return render_template('articles.html', articles=zip(articles,article_key))
@@ -138,8 +139,8 @@ def article(id):
     #articles = list(db.child("article").get().val().values())
     #article_key = list(db.child("article").get().val().keys())
     article={}
-    if (db.child("article").get().val() != None):
-        article = db.child("article").get().val()
+    if (db.child("web").child("article").get().val() != None):
+        article = db.child("web").child("article").get().val()
         article = article[str(id)]
 
     return render_template('article.html', article=article)
@@ -166,7 +167,7 @@ def register():
         #auth.create_user_with_email_and_password(email, password)
         session['username'] = username
 
-        db.child("users").child(username).push({"name": name, "email": email, "username": username, "password": password})
+        db.child("web").child("users").child(username).push({"name": name, "email": email, "username": username, "password": password})
         flash('You are now registered and can log in', 'success')
         return redirect(url_for('index'))
     return render_template('register.html', form=form)
@@ -180,7 +181,7 @@ def login():
         # getting form fields
         Username = request.form['username']
         password_candidate = request.form['password']
-        users = list(db.child("users").get().val().values())
+        users = list(db.child("web").child("users").get().val().values())
 
 
         for user in users:
@@ -221,10 +222,10 @@ def logout():
 def dashboard():
     articles = {}
     article_key = {}
-    #db.child("article").push({"title": "Hello World", "author": session['username'], "body": "asa", "date": str(now)})
-    if (db.child("article").get().val() != None):
-        articles = list(db.child("article").get().val().values())
-        article_key = list(db.child("article").get().val().keys())
+    #db.child("web").child("article").push({"title": "Hello World", "author": session['username'], "body": "asa", "date": str(now)})
+    if (db.child("web").child("article").get().val() != None):
+        articles = list(db.child("web").child("article").get().val().values())
+        article_key = list(db.child("web").child("article").get().val().keys())
 
 
     if articles is not None:
@@ -247,7 +248,7 @@ def add_article():
         body = form.body.data
         author = session['username']
 
-        db.child("article").push({"title": title, "author": author, "body": body, "date": str(now)})
+        db.child("web").child("article").push({"title": title, "author": author, "body": body, "date": str(now)})
 
         flash('Article Created', 'success')
 
@@ -272,14 +273,14 @@ def upload_file(id):
     file = request.files['inputfile']
     author = session['username']
     title = file.filename
-    idd = db.child("projects").child(str(id)).push({"title": title, "author": author, "fileBody": str(file), "date": str(now), "classCode": str(id)})
+    idd = db.child("web").child("projects").child(str(id)).push({"title": title, "author": author, "fileBody": str(file), "date": str(now), "classCode": str(id)})
     db_storage.child(str(idd['name'])).put(file)
 
     projects = {}
     project_key = {}
-    if (db.child("projects").get().val() != None):
-        projects = list(db.child("projects").child(str(id)).get().val().values())
-        project_key = list(db.child("projects").child(str(id)).get().val().keys())
+    if (db.child("web").child("projects").get().val() != None):
+        projects = list(db.child("web").child("projects").child(str(id)).get().val().values())
+        project_key = list(db.child("web").child("projects").child(str(id)).get().val().keys())
     else:
         projects = {}
         project_key = {}
@@ -382,7 +383,7 @@ def stat_freq_simulation(name):
 
 @app.route('/edit_article/<string:id>', methods=['GET', 'POST'])
 def edit_article(id):
-    articles = list(db.child("article").child(str(id)).get().val().values())
+    articles = list(db.child("web").child("article").child(str(id)).get().val().values())
     print('lol', articles)
     #articles = db.article.find_one({"_id": ObjectId(id)})
     form = ArticleForm(request.form)
@@ -400,14 +401,14 @@ def edit_article(id):
     if request.method == 'POST':
         title = request.form['title']
         body = request.form['body']
-        db.child("article").child(str(id)).update({"title": title, "author": session['username'], "body": body, "date": str(now)})
+        db.child("web").child("article").child(str(id)).update({"title": title, "author": session['username'], "body": body, "date": str(now)})
         flash('Article Updated', 'success')
         return redirect(url_for('dashboard'))
     return render_template('edit_article.html', form=form)
 
 @app.route('/delete_article/<string:id>', methods=['GET', 'POST'])
 def delete_article(id):
-    db.child("article").child(str(id)).remove()
+    db.child("web").child("article").child(str(id)).remove()
     flash('Article Deleted', 'success')
     return redirect(url_for('dashboard'))
 
@@ -418,9 +419,9 @@ def delete_article(id):
 def jobs():
     jobs = {}
     job_key = {}
-    if (db.child("jobs").get().val() != None):
-        jobs = list(db.child("jobs").get().val().values())
-        job_key = list(db.child("jobs").get().val().keys())
+    if (db.child("web").child("jobs").get().val() != None):
+        jobs = list(db.child("web").child("jobs").get().val().values())
+        job_key = list(db.child("web").child("jobs").get().val().keys())
     else:
         jobs = None
         job_key = None
@@ -433,7 +434,7 @@ def jobs():
 
 @app.route('/delete_job/<string:id>', methods=['GET', 'POST'])
 def delete_job(id):
-    db.child("jobs").child(str(id)).remove()
+    db.child("web").child("jobs").child(str(id)).remove()
     flash('Job Deleted', 'success')
     return redirect(url_for('jobs'))
 
@@ -453,7 +454,7 @@ def add_job():
         compensation = form.compensation.data
         tutor = form.tutor.data
 
-        db.child("jobs").push({"contact": contact, "subject": subject, "tutor": tutor, "compensation": compensation})
+        db.child("web").child("jobs").push({"contact": contact, "subject": subject, "tutor": tutor, "compensation": compensation})
 
         flash('Job Created', 'success')
 
@@ -472,9 +473,9 @@ languages = {"c": 1, "cpp": 2, "cpp14": 58, "java": 3,"mysql": 10,"python2": 5, 
 def online_judge():
     problems = {}
     problem_key = {}
-    if(db.child("problems").get().val() != None):
-        problems = list(db.child("problems").get().val().values())
-        problem_key = list(db.child("problems").get().val().keys())
+    if(db.child("web").child("problems").get().val() != None):
+        problems = list(db.child("web").child("problems").get().val().values())
+        problem_key = list(db.child("web").child("problems").get().val().keys())
 
 
     if problems is not None:
@@ -498,7 +499,7 @@ def add_problem():
         input = form.input.data
         output = form.output.data
 
-        db.child("problems").push({"name": name, "body": body, "input": input, "output": output})
+        db.child("web").child("problems").push({"name": name, "body": body, "input": input, "output": output})
 
         flash('Problem Created', 'success')
 
@@ -509,7 +510,7 @@ def add_problem():
 @app.route('/problem/<string:id>/')
 def problem(id):
     print(id)
-    problem = list(db.child("problems").child(str(id)).get().val().values())
+    problem = list(db.child("web").child("problems").child(str(id)).get().val().values())
     problem_key = str(id)
 
     return render_template('problem.html', problem=problem,key=problem_key)
@@ -523,8 +524,8 @@ class SolveProblemForm(Form):
 def solve_problem(id):
     form = SolveProblemForm(request.form)
 
-    problem = list(db.child("problems").child(str(id)).get().val().values())
-    problem_key = list(db.child("problems").get().val())
+    problem = list(db.child("web").child("problems").child(str(id)).get().val().values())
+    problem_key = list(db.child("web").child("problems").get().val())
     problem_key = problem_key[0]
 
 
@@ -547,7 +548,7 @@ def solve_problem(id):
         else:
             flash('Compilation Error', 'warning')
 
-        db.child("submission").child(session['username']).push({"name": problem[2], "user": session['username'], "verdict": verdict})
+        db.child("web").child("submission").child(session['username']).push({"name": problem[2], "user": session['username'], "verdict": verdict})
         return redirect(url_for('online_judge'))
 
     return render_template('solve_problem.html', form=form, languages=languages)
@@ -612,12 +613,12 @@ def hackerrank_api(username=None, title=None, code=None, language=None, input_=N
 
 @app.route('/profile')
 def profile():
-    user = list(db.child("users").child(session['username']).get().val().values())
+    user = list(db.child("web").child("users").child(session['username']).get().val().values())
     curuser = user[0]
     #submissions = db.submission.find({"user": str(session['username'])})
     submissions={}
     try:
-        submissions = list(db.child("submission").child(session['username']).get().val().values())
+        submissions = list(db.child("web").child("submission").child(session['username']).get().val().values())
     except:
         submissions = {}
     return render_template('profile.html', user=curuser, submissions=submissions)
