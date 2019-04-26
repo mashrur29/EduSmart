@@ -23,14 +23,16 @@ import emoji
 import logging
 from goodreads import client
 from database import firebase
-
+from FMRI import main_method
 
 cache = SimpleCache()
 app = Flask(__name__, template_folder='Templates')
 app.secret_key = 'super secret key'
 now = datetime.datetime.now()
-GR_KEY = 'hCgnomVsyFTNe73zLW7Q'
-GR_SECRET = 'SR9wYYUa5tzHx0vQrVZEDghDoMBjtkItshkYwVkCcQ'
+#GR_KEY = 'hCgnomVsyFTNe73zLW7Q'
+GR_KEY = 'HeN7az3JVPSRALsq6Jxpfg'
+#GR_SECRET = 'SR9wYYUa5tzHx0vQrVZEDghDoMBjtkItshkYwVkCcQ'
+GR_SECRET = 'J2qXu5Q1XSvSYusFWxEEAXeqNr72fEScyzhDk2Gx8'
 GR_ACCESS_TOKEN = app.secret_key
 GR_ACCESS_TOKEN_SECRET = app.secret_key
 
@@ -763,23 +765,17 @@ def search_book():
 def book_search_results(key, title):
     payload = {"key": key, "q": title}
 
-    url = "http://www.goodreads.com/search.xml"
-    query = ''
+    url = "https://www.goodreads.com/search.xml"
     ok = False
+
     while ok == False:
         try:
-            query = requests.get(url, params=payload)
+            query = requests.get("https://www.goodreads.com/search.xml", params=payload)
             ok=True
             break
         except:
-            print("Connection refused by the server..")
-            print("Let me sleep for 5 seconds")
-            print("ZZzzzz...")
             time.sleep(5)
-            print("Was a nice sleep, now let me continue...")
             continue
-
-
 
     doc = untangle.parse(query.content.decode('utf-8'))
 
@@ -800,6 +796,63 @@ def book_search_results(key, title):
 
     return books
 
+
+##########################################################################################
+
+@app.route('/download_dataset/<string:id>/<string:title>', methods=['POST', 'GET'])
+def download_dataset(id,title):
+    print('Downloading')
+    print(id)
+    db_storage.child(str(id)).download(title)
+    flash("File Downloaded", "success")
+    print('file downloaded')
+
+    return redirect(url_for('datasets'))
+
+@app.route('/upload_dataset/<string:id>', methods=['POST', 'GET'])
+def upload_dataset(id):
+    print(id)
+    file = request.files['inputfile']
+    author = session['username']
+    title = file.filename
+    idd = db.child("web").child("datasets").push({"title": title, "author": author, "fileBody": str(file), "date": str(now)})
+    db_storage.child(str(idd['name'])).put(file)
+
+    datasets = {}
+    dataset_key = {}
+    try:
+        datasets = list(db.child("web").child("datasets").get().val().values())
+        dataset_key = list(db.child("web").child("datasets").get().val().keys())
+    except:
+        datasets = {}
+        dataset_key = {}
+    return render_template('datasets.html', datasets=zip(datasets,dataset_key), id=id)
+
+@app.route('/dataset')
+def datasets():
+    datasets = {}
+    dataset_key = {}
+    try:
+        datasets = list(db.child("web").child("datasets").get().val().values())
+        dataset_key = list(db.child("web").child("datasets").get().val().keys())
+    except:
+        datasets = None
+        dataset_key = None
+        return render_template('datasets.html', id=5)
+
+    return render_template('datasets.html', datasets=zip(datasets, dataset_key), id=5)
+
+
+@app.route('/evaluate_dataset/<string:id>/<string:title>', methods=['POST', 'GET'])
+def evaluate_dataset(id, title):
+    res = list(main_method())
+    return render_template('evaluate_dataset.html', title=title, res=res)
+
+##########################################################################################
+
+@app.route('/visualize_dataset')
+def chart_visualize():
+    return render_template('chart_visualize.html')
 
 ##########################################################################################
 

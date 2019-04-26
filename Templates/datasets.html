@@ -1,0 +1,36 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+    <br/><br/>
+    <h1 align="center"><b>DATASETS</b></h1>
+<div align="center"><i>A wide range of data for experimental use</i><br> For any query please contact us for more details</i></div>
+    <br/><br/>
+    <hr>
+    <table class="table table-bordered">
+    <tr>
+      <th>Title</th>
+      <th>Contributor</th>
+      <th>Date</th>
+      <th></th>
+      <th></th>
+    </tr>
+    {% for dataset,key in datasets %}
+      <tr>
+        <td>{{dataset['title']}}</td>
+        <td>{{dataset['author']}}</td>
+        <td>{{dataset['date']}}</td>
+        <td align="center"><a class="btn btn-primary" href="{{url_for('evaluate_dataset', id=key, title=dataset['title'])}}">Evaluate</a></td>
+          <td align="center"><a class="btn btn-success pull-right" href="{{url_for('download_dataset', id=key, title=dataset['title'])}}">Download</a></td>
+
+      </tr>
+    {% endfor %}
+    </table>
+    <br/>
+    <form method="post" action="{{url_for('upload_dataset', id=id)}}" enctype="multipart/form-data" align="center">
+            <div class="form-group">
+                <label for="inputfile"> <h5> Add New </h5></label>
+                <input type="file" name="inputfile">
+            </div>
+            <button type="submit" class="btn btn-success">Turn In</button>
+    </form>
+{% endblock %}
