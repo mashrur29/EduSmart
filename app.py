@@ -742,7 +742,7 @@ def get_book_details(book_id, key):
 def show_book_details(book_id):
     print('inside')
     book = get_book_details(book_id, GR_KEY)
-    time.sleep(100)
+    #time.sleep(100)
     return render_template("book_detail.html", book=book)
 
 
